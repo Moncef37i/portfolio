@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SM — Souilah Moncef</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #07070a;
+  --surface: #0c0c12;
+  --border: #1a1a2e;
+  --blue: #5bc8f5;
+  --blue-bright: #7dd8ff;
+  --blue-dim: rgba(91,200,245,.15);
+  --blue-glow: rgba(91,200,245,.4);
+  --text: #ffffff;
+  --muted: #4a5568;
+  --font-display: 'Bebas Neue', cursive;
+  --font-body: 'Outfit', sans-serif;
+}
+html, body { width: 100%; height: 100%; background: var(--bg); overflow: hidden; cursor: none; font-family: var(--font-body); }
+
+/* ===== CURSOR ===== */
+#cur {
+  position: fixed; border-radius: 50%;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: 2px solid var(--blue);
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 12px var(--blue), inset 0 0 8px rgba(91,200,245,.15);
+  transition: width .2s, height .2s, box-shadow .2s, background .2s;
+}
+#cur.hover {
+  width: 52px; height: 52px;
+  background: rgba(91,200,245,.08);
+  box-shadow: 0 0 20px var(--blue), 0 0 50px rgba(91,200,245,.3);
+}
+#curDot {
+  position: fixed; border-radius: 50%;
+  width: 5px; height: 5px;
+  background: var(--blue);
+  pointer-events: none; z-index: 10000;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 6px var(--blue);
+}
+
+/* ===== LOADER ===== */
+#loader {
+  position: fixed; inset: 0; z-index: 9000;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2rem;
+}
+.ld-topline {
+  position: absolute; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, transparent, var(--blue), var(--blue-bright), var(--blue));
+  box-shadow: 0 0 10px var(--blue), 0 0 24px rgba(91,200,245,.5);
+  transition: width .06s linear;
+}
+.ld-bar-wrap {
+  width: min(480px, 80vw);
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+.ld-bar-track {
+  width: 100%; height: 3px;
+  background: rgba(91,200,245,.1);
+  border-radius: 2px; overflow: hidden;
+  position: relative;
+}
+.ld-bar-fill {
+  height: 100%; width: 0%;
+  background: var(--blue);
+  box-shadow: 0 0 12px var(--blue), 0 0 30px rgba(91,200,245,.5);
+  border-radius: 2px;
+  transition: width .06s linear;
+}
+.ld-bar-pct {
+  font-family: var(--font-body); font-size: .75rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--blue);
+}
+.ld-pct-num { font-family: var(--font-display); font-size: 1.1rem; }
+.ld-welcome {
+  font-family: var(--font-display); font-size: clamp(2rem,6vw,4rem);
+  letter-spacing: .12em; color: var(--blue);
+  text-shadow: 0 0 30px var(--blue), 0 0 60px rgba(91,200,245,.4);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+  text-align: center;
+}
+.ld-welcome.show { opacity: 1; transform: translateY(0); }
+.ld-exit { animation: ldOut .8s cubic-bezier(.7,0,1,1) forwards; }
+@keyframes ldOut { to { transform: translateY(-100%); opacity: 0; } }
+
+/* ===== APP ===== */
+#app { position: fixed; inset: 0; opacity: 0; transition: opacity .7s; overflow: hidden; }
+#app.show { opacity: 1; }
+
+/* ===== LEFT SIDEBAR ===== */
+.sidebar {
+  position: absolute; left: 0; top: 64px; bottom: 0;
+  width: 52px; z-index: 100;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 60px; gap: 0;
+  background: transparent;
+}
+.social-item {
+  position: relative;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; overflow: hidden;
+}
+.social-item::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--blue);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .32s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 0 18px var(--blue), 0 0 36px rgba(91,200,245,.3);
+}
+.social-item:hover::before { transform: scaleX(1); }
+.social-icon {
+  position: relative; z-index: 1;
+  color: rgba(91,200,245,.35);
+  transition: color .22s, transform .22s;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.social-item:hover .social-icon { color: var(--bg); transform: scale(1.1); }
+.social-icon svg { width: 20px; height: 20px; fill: currentColor; }
+.cv-side {
+  position: relative;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; overflow: hidden;
+  margin-top: 2px;
+}
+.cv-side::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--blue);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .32s cubic-bezier(.16,1,.3,1);
+}
+.cv-side:hover::before { transform: scaleX(1); }
+.cv-side-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-size: 1rem;
+  letter-spacing: .06em; color: rgba(91,200,245,.5);
+  transition: color .22s, transform .22s;
+  pointer-events: none;
+}
+.cv-side:hover .cv-side-label { color: var(--bg); transform: scale(1.05); }
+
+/* ===== NAV ===== */
+nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 200;
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 2.5rem;
+  background: rgba(7,7,10,.96); backdrop-filter: blur(24px);
+}
+.nav-left { display: flex; align-items: center; z-index: 2; }
+.nav-logo {
+  font-family: var(--font-display); font-size: 2rem;
+  letter-spacing: .06em; cursor: none;
+  color: var(--blue);
+  text-shadow: 0 0 14px rgba(91,200,245,.5), 0 0 36px rgba(91,200,245,.2);
+  user-select: none; white-space: nowrap; display: inline-block;
+  overflow: hidden;
+}
+.logo-letter {
+  display: inline-block;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .25s, transform .25s;
+}
+.logo-letter.vis { opacity: 1; transform: translateY(0); }
+.nav-email-wrap {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .1rem;
+  z-index: 1;
+}
+.nav-email {
+  font-size: .82rem; letter-spacing: .06em; color: var(--blue);
+  cursor: none; position: relative;
+  padding: .28rem .8rem; border: 1px solid transparent; transition: all .3s;
+}
+.nav-email:hover { color: var(--blue-bright); border-color: rgba(91,200,245,.3); text-shadow: 0 0 12px rgba(91,200,245,.5); }
+.nav-email.copied { color: #00f5c4; border-color: #00f5c4; }
+.copy-flash { font-size: .58rem; color: #00f5c4; letter-spacing: .1em; text-transform: uppercase; position: absolute; top: -1.4rem; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity .3s; white-space: nowrap; }
+.nav-email.copied .copy-flash { opacity: 1; }
+.nav-email-hint { font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; color: transparent; transition: color .3s; }
+.nav-email:hover + .nav-email-hint { color: var(--muted); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 2rem; z-index: 2; }
+.nav-link { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); cursor: none; transition: color .2s; padding: .3rem 0; border-bottom: 1px solid transparent; background: none; border-left: none; border-right: none; border-top: none; font-family: var(--font-body); }
+.nav-link:hover, .nav-link.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* ===== PAGES ===== */
+.page { position: absolute; inset: 0; top: 64px; left: 52px; opacity: 0; pointer-events: none; transition: opacity .5s; }
+.page.active { opacity: 1; pointer-events: all; }
+#app { transform-origin: top left; transform: scale(1.15); width: calc(100% / 1.15); height: calc(100% / 1.15); }
+
+/* ===== HOME ===== */
+#page-home {
+  display: grid; grid-template-columns: 1fr 2fr 1fr;
+  align-items: center; height: 100%; overflow: hidden;
+  padding-bottom: 52px;
+}
+.home-bg {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(91,200,245,.015) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(91,200,245,.015) 1px,transparent 1px);
+  background-size: 72px 72px; animation: bgD 35s linear infinite;
+}
+@keyframes bgD { to { background-position: 72px 72px; } }
+.home-glow {
+  position: absolute; width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle,rgba(91,200,245,.05) 0%,transparent 65%);
+  top: 45%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+}
+
+/* LEFT */
+.home-left { padding: 0 2rem 0 3rem; position: relative; z-index: 2; margin-top: -18vh; }
+.hl-hello { font-size: .88rem; color: var(--blue); letter-spacing: .07em; margin-bottom: .5rem; font-weight: 400; }
+.hl-name { font-family: var(--font-display); font-size: clamp(2.8rem,4.5vw,5rem); line-height: .95; }
+.hl-souilah { color: #ffffff; display: block; }
+.hl-moncef { display: block; color: var(--blue); text-shadow: 0 0 20px rgba(91,200,245,.4); }
+
+/* CENTER */
+.home-center { display: flex; align-items: center; justify-content: center; height: 100%; position: relative; z-index: 2; }
+#three-canvas { width: 100%; height: 100%; display: block; }
+
+/* RIGHT */
+.home-right { padding: 0 3rem 0 2rem; position: relative; z-index: 2; text-align: right; margin-top: -18vh; }
+.hr-an { font-size: .85rem; color: var(--muted); letter-spacing: .06em; margin-bottom: .3rem; }
+.hr-role { font-family: var(--font-display); font-size: clamp(2.5rem,4vw,4.5rem); line-height: .92; margin-bottom: 1rem; }
+.hr-role .r1 { display: block; color: var(--blue); text-shadow: 0 0 20px rgba(91,200,245,.4); }
+.hr-role .r2 { display: block; color: #ffffff; }
+.hr-skills { display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: .28rem; flex-wrap: wrap; }
+.hr-skill {
+  font-size: .6rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); padding: .14rem .42rem;
+  border: 1px solid var(--border); background: var(--surface);
+  transition: all .22s; cursor: none;
+}
+.hr-skill:hover { border-color: var(--blue); color: var(--blue); }
+
+/* FOOTER */
+.home-footer {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 52px;
+  background: rgba(7,7,10,.92);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem; z-index: 10;
+}
+.hf-left { display: flex; align-items: center; gap: .6rem; font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.hf-line { width: 26px; height: 1px; background: linear-gradient(90deg,var(--blue),transparent); animation: lineA 1.5s ease-in-out infinite; }
+@keyframes lineA { 0%,100%{opacity:.3} 50%{opacity:1} }
+.hf-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 6px var(--blue); animation: dotA 2s ease-in-out infinite; }
+@keyframes dotA { 0%,100%{opacity:.4} 50%{opacity:1} }
+.hf-right { display: flex; align-items: center; }
+.cv-footer-btn {
+  font-family: var(--font-display); font-size: 2rem; line-height: 1; letter-spacing: .1em;
+  color: var(--blue); text-shadow: 0 0 16px rgba(91,200,245,.6);
+  background: none; border: none; cursor: none; padding: 0;
+  display: flex; flex-direction: column; align-items: flex-end;
+  transition: text-shadow .25s, color .25s;
+}
+.cv-footer-btn:hover { color: var(--blue-bright); text-shadow: 0 0 24px var(--blue), 0 0 60px rgba(91,200,245,.5); }
+.cv-footer-sub { font-family: var(--font-body); font-size: .5rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* ===== ABOUT PAGE ===== */
+#page-about { display: grid; grid-template-columns: 1fr 1fr; height: 100%; overflow: hidden; }
+.about-canvas-wrap { position: relative; height: 100%; }
+#about-canvas { width: 100%; height: 100%; display: block; }
+.about-right {
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding: 2rem 2.5rem 1.5rem;
+  position: relative; overflow-y: auto; overflow-x: hidden;
+}
+.about-right::-webkit-scrollbar { width: 3px; }
+.about-right::-webkit-scrollbar-thumb { background: var(--border); }
+.about-bg-text { position: absolute; font-family: var(--font-display); font-size: 8rem; color: rgba(91,200,245,.02); top: 1rem; right: -1rem; line-height: 1; user-select: none; pointer-events: none; }
+.about-tag { font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--blue); margin-bottom: .8rem; flex-shrink: 0; }
+.about-tag::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--blue); vertical-align: middle; margin-right: .6rem; }
+.about-quote-box { position: relative; padding: 1.2rem 1.5rem 1.2rem 2.2rem; border-left: 2px solid var(--blue); background: rgba(91,200,245,.04); flex-shrink: 0; }
+.about-quote-icon { position: absolute; top: .6rem; left: .7rem; font-family: var(--font-display); font-size: 2rem; color: var(--blue); opacity: .25; line-height: 1; }
+.about-quote-text { font-size: .78rem; font-weight: 300; line-height: 1.8; color: rgba(255,255,255,.75); margin-bottom: 1rem; }
+.about-quote-author { font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); }
+.about-back { margin-top: 1.2rem; flex-shrink: 0; }
+.back-btn { display: inline-flex; align-items: center; gap: .6rem; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); cursor: none; border: 1px solid var(--border); padding: .45rem 1.1rem; background: none; transition: all .3s; font-family: var(--font-body); }
+.back-btn:hover { border-color: var(--blue); color: var(--blue); }
+.back-icon { transition: transform .3s; }
+.back-btn:hover .back-icon { transform: translateX(-4px); }
+
+/* ===== PROJECTS PAGE ===== */
+#page-projects { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+.proj-back-btn {
+  position: absolute; top: 1.4rem; left: 2rem; z-index: 10;
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-size: .7rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); cursor: none;
+  border: 1px solid var(--border); padding: .45rem 1.1rem;
+  background: none; transition: all .3s; font-family: var(--font-body);
+}
+.proj-back-btn:hover { border-color: var(--blue); color: var(--blue); }
+.proj-back-icon { transition: transform .3s; }
+.proj-back-btn:hover .proj-back-icon { transform: translateX(-4px); }
+.proj-grid {
+  flex: 1; overflow-y: auto; padding: 5rem 2.5rem 2.5rem;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1rem; align-content: start;
+}
+.proj-grid::-webkit-scrollbar { width: 3px; }
+.proj-grid::-webkit-scrollbar-thumb { background: var(--border); }
+.proj-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 0; position: relative; overflow: hidden;
+  cursor: none; transition: all .3s;
+  display: flex; flex-direction: column;
+  min-height: 220px;
+}
+.proj-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,var(--blue),rgba(91,200,245,.2));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s cubic-bezier(.16,1,.3,1);
+}
+.proj-card:hover { border-color: rgba(91,200,245,.35); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(91,200,245,.08); }
+.proj-card:hover::before { transform: scaleX(1); }
+.pc-img {
+  width: 100%; flex: 1; min-height: 130px;
+  background: linear-gradient(135deg, rgba(91,200,245,.06) 0%, rgba(91,200,245,.02) 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.pc-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(91,200,245,.04));
+}
+.pc-img-icon { opacity: .12; transition: opacity .3s; }
+.proj-card:hover .pc-img-icon { opacity: .22; }
+.pc-img-icon svg { width: 48px; height: 48px; stroke: var(--blue); fill: none; stroke-width: 1; }
+.pc-body { padding: 1rem 1.2rem; }
+.pc-title { font-size: .88rem; font-weight: 600; color: var(--text); margin-bottom: .35rem; }
+.pc-desc { font-size: .7rem; color: var(--muted); line-height: 1.6; margin-bottom: .75rem; }
+.pc-tags { display: flex; flex-wrap: wrap; gap: .28rem; }
+.pc-tag { font-size: .55rem; padding: .18rem .45rem; border: 1px solid var(--border); color: var(--muted); letter-spacing: .07em; text-transform: uppercase; transition: all .2s; }
+.proj-card:hover .pc-tag { border-color: rgba(91,200,245,.25); color: rgba(91,200,245,.65); }
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .page { left: 0; }
+  #page-home { grid-template-columns: 1fr; }
+  .home-left, .home-right { display: none; }
+  .proj-grid { grid-template-columns: 1fr 1fr; }
+  #page-about { grid-template-columns: 1fr; }
+  .about-canvas-wrap { height: 40vh; }
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curDot"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-topline" id="ldTopline"></div>
+  <div class="ld-bar-wrap">
+    <div class="ld-welcome" id="ldWelcome">WELCOME</div>
+    <div class="ld-bar-track">
+      <div class="ld-bar-fill" id="ldFill"></div>
+    </div>
+    <div class="ld-bar-pct">
+      <span class="ld-pct-num" id="ldPct">0</span>%
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <a class="social-item" href="https://github.com/Moncef37i" target="_blank" id="ghLink">
+      <span class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </span>
+    </a>
+    <a class="social-item" href="https://www.linkedin.com/in/moncef-souilah37i/" target="_blank" id="liLink">
+      <span class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </span>
+    </a>
+    <a class="cv-side" id="cvSideBtn" href="#" onclick="downloadCV(event)">
+      <span class="cv-side-label">CV</span>
+    </a>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <div class="nav-logo" id="smLogo">
+        <span class="logo-letter vis" data-i="0">S</span><span class="logo-letter vis" data-i="1">M</span>
+      </div>
+    </div>
+    <div class="nav-email-wrap">
+      <div class="nav-email" id="emailBtn" onclick="copyEmail()">
+        <span class="copy-flash" id="copyFlash">Copied!</span>
+        souilahmoncef99@gmail.com
+      </div>
+      <div class="nav-email-hint">click to copy</div>
+    </div>
+    <div class="nav-right">
+      <button class="nav-link" id="navAbout" onclick="goPage('about')">About</button>
+      <button class="nav-link" id="navProjects" onclick="goPage('projects')">Projects</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="home-bg"></div>
+    <div class="home-glow"></div>
+
+    <div class="home-left">
+      <p class="hl-hello">Hello! I'm</p>
+      <h1 class="hl-name">
+        <span class="hl-souilah">SOUILAH</span>
+        <span class="hl-moncef">MONCEF</span>
+      </h1>
+    </div>
+
+    <div class="home-center">
+      <canvas id="three-canvas"></canvas>
+    </div>
+
+    <div class="home-right">
+      <p class="hr-an">An</p>
+      <h2 class="hr-role">
+        <span class="r1">Web</span>
+        <span class="r2">Developer</span>
+      </h2>
+      <div class="hr-skills">
+        <span class="hr-skill">HTML</span>
+        <span class="hr-skill">CSS</span>
+        <span class="hr-skill">JavaScript</span>
+        <span class="hr-skill">PHP</span>
+        <span class="hr-skill">MySQL</span>
+      </div>
+    </div>
+
+    <div class="home-footer">
+      <div class="hf-left">
+        <div class="hf-line"></div>
+        Souilah Moncef
+        <div class="hf-dot"></div>
+        <span>Available for work</span>
+      </div>
+      <div class="hf-right">
+        <button class="cv-footer-btn" onclick="downloadCV(event)">
+          CV
+          <span class="cv-footer-sub">↓ download</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="page" id="page-about">
+    <div class="about-canvas-wrap">
+      <canvas id="about-canvas"></canvas>
+    </div>
+    <div class="about-right">
+      <div class="about-bg-text">SM</div>
+      <p class="about-tag">About me</p>
+      <div class="about-quote-box">
+        <span class="about-quote-icon">"</span>
+        <p class="about-quote-text">
+          I am an Independent Developer from Algeria, passionate about building clean, scalable, and impactful digital experiences. I work with MySQL, PHP, HTML, CSS, JavaScript, and Three.js to craft both functional and visually engaging applications. With a competitive programming mindset, I enjoy solving complex problems and turning ideas into efficient, high-performance solutions. I am driven by curiosity, continuous learning, and the challenge of pushing my limits every day. For me, development is not just about writing code — it's about creating experiences, optimizing performance, and building projects that truly make a difference. I strive to grow, innovate, and leave a strong digital footprint through every line of code I write.
+        </p>
+        <p class="about-quote-author">— Souilah Moncef</p>
+      </div>
+      <div class="about-back">
+        <button class="back-btn" onclick="goPage('home')">
+          <span class="back-icon">←</span> Back to portfolio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="page" id="page-projects">
+    <button class="proj-back-btn" onclick="goPage('home')">
+      <span class="proj-back-icon">←</span> Return to portfolio
+    </button>
+
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">E-Commerce Platform</h3>
+          <p class="pc-desc">Full-stack shop with cart, authentication, and admin dashboard.</p>
+          <div class="pc-tags"><span class="pc-tag">PHP</span><span class="pc-tag">MySQL</span><span class="pc-tag">JS</span><span class="pc-tag">CSS</span></div>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">Portfolio Builder</h3>
+          <p class="pc-desc">Drag & drop portfolio generator for creatives and freelancers.</p>
+          <div class="pc-tags"><span class="pc-tag">HTML</span><span class="pc-tag">CSS</span><span class="pc-tag">JS</span></div>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">Task Manager App</h3>
+          <p class="pc-desc">Kanban board with live updates and team collaboration features.</p>
+          <div class="pc-tags"><span class="pc-tag">JS</span><span class="pc-tag">MySQL</span><span class="pc-tag">PHP</span></div>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">Restaurant Website</h3>
+          <p class="pc-desc">Animated landing page with online reservation system.</p>
+          <div class="pc-tags"><span class="pc-tag">HTML</span><span class="pc-tag">CSS</span><span class="pc-tag">JS</span></div>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">Blog CMS</h3>
+          <p class="pc-desc">Custom CMS with markdown support and built-in SEO tools.</p>
+          <div class="pc-tags"><span class="pc-tag">PHP</span><span class="pc-tag">MySQL</span><span class="pc-tag">CSS</span></div>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="pc-img">
+          <div class="pc-img-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        </div>
+        <div class="pc-body">
+          <h3 class="pc-title">Coming Soon</h3>
+          <p class="pc-desc">New project in the works. Something exciting is coming.</p>
+          <div class="pc-tags"><span class="pc-tag">TBD</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ===== CURSOR =====
+const curEl  = document.getElementById('cur');
+const curDot = document.getElementById('curDot');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; curEl.style.left=mx+'px'; curEl.style.top=my+'px'; curDot.style.left=mx+'px'; curDot.style.top=my+'px'; });
+(function aT(){ tx+=(mx-tx)*.12; ty+=(my-ty)*.12; curEl.style.left=tx+'px'; curEl.style.top=ty+'px'; requestAnimationFrame(aT); })();
+document.querySelectorAll('a,button,.nav-email,.hr-skill,.proj-card,.back-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>curEl.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>curEl.classList.remove('hover'));
+});
+
+// ===== SM LOGO ===== 
+const smLogo = document.getElementById('smLogo');
+const fullName = 'SOUILAH MONCEF';
+const shortName = 'SM';
+let smHovered = false;
+function buildLetters(text, visible) {
+  smLogo.innerHTML = '';
+  [...text].forEach((ch,i) => {
+    const s = document.createElement('span');
+    s.className = 'logo-letter' + (visible ? ' vis' : '');
+    s.textContent = ch === ' ' ? '\u00A0' : ch;
+    s.style.transitionDelay = visible ? (i * 40) + 'ms' : '0ms';
+    smLogo.appendChild(s);
+  });
+}
+smLogo.addEventListener('mouseenter', ()=>{
+  smHovered = true;
+  buildLetters(fullName, false);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    smLogo.querySelectorAll('.logo-letter').forEach(l=>l.classList.add('vis'));
+  }));
+});
+smLogo.addEventListener('mouseleave', ()=>{
+  smHovered = false;
+  smLogo.querySelectorAll('.logo-letter').forEach(l=>{ l.style.transitionDelay='0ms'; l.classList.remove('vis'); });
+  setTimeout(()=>{ if(!smHovered) buildLetters(shortName, true); }, 200);
+});
+
+// ===== LOADER =====
+let pct = 0;
+const ldFill = document.getElementById('ldFill');
+const ldPct  = document.getElementById('ldPct');
+const ldTopline = document.getElementById('ldTopline');
+const ldWelcome = document.getElementById('ldWelcome');
+
+function tick() {
+  pct = Math.min(100, pct + Math.max(0.5, (100 - pct) * 0.025));
+  const p = Math.floor(pct);
+  ldFill.style.width = pct + '%';
+  ldTopline.style.width = pct + '%';
+  ldPct.textContent = p;
+  if (pct < 100) { setTimeout(tick, 25); }
+  else {
+    ldFill.style.width = '100%'; ldPct.textContent = '100';
+    setTimeout(()=>{
+      ldWelcome.classList.add('show');
+      setTimeout(launch, 1200);
+    }, 300);
+  }
+}
+setTimeout(tick, 400);
+
+function launch() {
+  document.getElementById('loader').classList.add('ld-exit');
+  const app = document.getElementById('app');
+  setTimeout(()=>{
+    app.classList.add('show');
+    document.getElementById('loader').style.display = 'none';
+    initThree();
+  }, 800);
+}
+
+// ===== PAGE ROUTING =====
+let currentPage = 'home', homeRenderer = null, aboutRenderer = null, aboutLookAway = false;
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(name==='about'){ document.getElementById('navAbout').classList.add('active'); aboutLookAway=true; }
+  if(name==='projects') document.getElementById('navProjects').classList.add('active');
+  if(name==='home') aboutLookAway=false;
+  currentPage = name;
+}
+
+// ===== EMAIL =====
+function copyEmail() {
+  navigator.clipboard.writeText('souilahmoncef99@gmail.com').then(()=>{
+    const btn = document.getElementById('emailBtn');
+    btn.classList.add('copied');
+    setTimeout(()=>btn.classList.remove('copied'), 2000);
+  });
+}
+
+// ===== CV =====
+function downloadCV(e) {
+  if(e) e.preventDefault();
+  alert('Add your CV file as "cv_souilah_moncef.pdf" next to this HTML file — then the download will work automatically!');
+}
+
+// ===== THREE.JS STYLIZED AVATAR =====
+let homeAvatarData = null;
+let aboutAvatarData = null;
+let isWakingUp = true;
+let wakeUpProgress = 0;
+
+// Blink system
+class BlinkSystem {
+  constructor() {
+    this.nextBlink = Date.now() + 2000 + Math.random() * 3000;
+    this.isBlinking = false;
+    this.blinkStart = 0;
+    this.blinkDuration = 150;
+  }
+  
+  update(eyeLeft, eyeRight) {
+    if (!eyeLeft || !eyeRight) return;
+    const now = Date.now();
+    
+    if (!this.isBlinking && now >= this.nextBlink) {
+      this.isBlinking = true;
+      this.blinkStart = now;
+    }
+    
+    if (this.isBlinking) {
+      const progress = (now - this.blinkStart) / this.blinkDuration;
+      if (progress >= 1) {
+        this.isBlinking = false;
+        eyeLeft.scale.y = 1;
+        eyeRight.scale.y = 1;
+        this.nextBlink = now + 2000 + Math.random() * 4000;
+      } else {
+        const closeAmount = Math.sin(progress * Math.PI);
+        eyeLeft.scale.y = 1 - closeAmount * 0.9;
+        eyeRight.scale.y = 1 - closeAmount * 0.9;
+      }
+    }
+  }
+}
+
+const homeBlink = new BlinkSystem();
+const aboutBlink = new BlinkSystem();
+
+function createStylizedAvatar() {
+  const avatar = new THREE.Group();
+  
+  // Materials
+  const skinMat = new THREE.MeshPhysicalMaterial({
+    color: 0xe8d5c4,
+    roughness: 0.3,
+    metalness: 0.1,
+    clearcoat: 0.3,
+    clearcoatRoughness: 0.2
+  });
+  
+  const hairDarkMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1a1a,
+    roughness: 0.7
+  });
+  
+  const hairFadeMat = new THREE.MeshStandardMaterial({
+    color: 0x333333,
+    roughness: 0.8
+  });
+  
+  const eyeWhiteMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.1
+  });
+  
+  const eyeGlowMat = new THREE.MeshStandardMaterial({
+    color: 0x5bc8f5,
+    emissive: 0x5bc8f5,
+    emissiveIntensity: 2
+  });
+  
+  const facialHairMat = new THREE.MeshStandardMaterial({
+    color: 0x2a2a2a,
+    roughness: 0.9
+  });
+  
+  // HEAD - Smooth stylized shape
+  const headGeo = new THREE.SphereGeometry(1, 64, 64);
+  const head = new THREE.Mesh(headGeo, skinMat);
+  head.scale.set(0.95, 1.15, 0.95);
+  head.castShadow = true;
+  avatar.add(head);
+  
+  // FADE BUZZ CUT HAIR
+  // Top dark hair
+  const hairTop = new THREE.Mesh(
+    new THREE.SphereGeometry(1.02, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.35),
+    hairDarkMat
+  );
+  hairTop.scale.set(0.96, 1.1, 0.96);
+  hairTop.position.y = 0.05;
+  avatar.add(hairTop);
+  
+  // Fade sides (gradient effect with multiple layers)
+  for (let i = 0; i < 3; i++) {
+    const fadeLayer = new THREE.Mesh(
+      new THREE.SphereGeometry(1.01 + i * 0.005, 32, 16, 0, Math.PI * 2, Math.PI * 0.35, Math.PI * 0.15),
+      new THREE.MeshStandardMaterial({
+        color: new THREE.Color().lerpColors(new THREE.Color(0x333333), new THREE.Color(0x1a1a1a), i / 2),
+        roughness: 0.8
+      })
+    );
+    fadeLayer.scale.set(0.97 + i * 0.01, 1.12, 0.97 + i * 0.01);
+    fadeLayer.position.y = 0.02;
+    avatar.add(fadeLayer);
+  }
+  
+  // EYEBROWS
+  const browGeo = new THREE.CapsuleGeometry(0.04, 0.25, 4, 8);
+  const leftBrow = new THREE.Mesh(browGeo, hairDarkMat);
+  leftBrow.position.set(-0.28, 0.35, 0.88);
+  leftBrow.rotation.z = 0.15;
+  leftBrow.rotation.x = -0.1;
+  avatar.add(leftBrow);
+  
+  const rightBrow = new THREE.Mesh(browGeo, hairDarkMat);
+  rightBrow.position.set(0.28, 0.35, 0.88);
+  rightBrow.rotation.z = -0.15;
+  rightBrow.rotation.x = -0.1;
+  avatar.add(rightBrow);
+  
+  // EYES GROUP (for animation)
+  const eyesGroup = new THREE.Group();
+  eyesGroup.position.set(0, 0.08, 0.85);
+  avatar.add(eyesGroup);
+  
+  // Eye sockets (slight indentation)
+  const socketGeo = new THREE.SphereGeometry(0.18, 32, 16);
+  const leftSocket = new THREE.Mesh(socketGeo, new THREE.MeshStandardMaterial({color: 0xd4c4b5, roughness: 0.4}));
+  leftSocket.position.set(-0.3, 0, 0);
+  leftSocket.scale.set(1, 0.6, 0.3);
+  eyesGroup.add(leftSocket);
+  
+  const rightSocket = new THREE.Mesh(socketGeo, new THREE.MeshStandardMaterial({color: 0xd4c4b5, roughness: 0.4}));
+  rightSocket.position.set(0.3, 0, 0);
+  rightSocket.scale.set(1, 0.6, 0.3);
+  eyesGroup.add(rightSocket);
+  
+  // Eye whites
+  const eyeGeo = new THREE.SphereGeometry(0.14, 32, 16);
+  const leftEye = new THREE.Mesh(eyeGeo, eyeWhiteMat);
+  leftEye.position.set(-0.3, 0, 0.02);
+  leftEye.scale.set(1, 0.7, 0.5);
+  eyesGroup.add(leftEye);
+  
+  const rightEye = new THREE.Mesh(eyeGeo, eyeWhiteMat);
+  rightEye.position.set(0.3, 0, 0.02);
+  rightEye.scale.set(1, 0.7, 0.5);
+  eyesGroup.add(rightEye);
+  
+  // Glowing pupils
+  const pupilGeo = new THREE.SphereGeometry(0.06, 16, 16);
+  const leftPupil = new THREE.Mesh(pupilGeo, eyeGlowMat);
+  leftPupil.position.set(-0.3, 0, 0.08);
+  eyesGroup.add(leftPupil);
+  
+  const rightPupil = new THREE.Mesh(pupilGeo, eyeGlowMat);
+  rightPupil.position.set(0.3, 0, 0.08);
+  eyesGroup.add(rightPupil);
+  
+  // MUSTACHE - Curled style
+  const mustacheGroup = new THREE.Group();
+  mustacheGroup.position.set(0, -0.15, 0.92);
+  avatar.add(mustacheGroup);
+  
+  // Center
+  const stacheCenter = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.035, 0.15, 4, 8),
+    facialHairMat
+  );
+  stacheCenter.rotation.z = Math.PI / 2;
+  mustacheGroup.add(stacheCenter);
+  
+  // Left side with curl
+  const stacheLeft = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.03, 0.2, 4, 8),
+    facialHairMat
+  );
+  stacheLeft.position.set(-0.18, 0.02, 0);
+  stacheLeft.rotation.z = 0.3;
+  mustacheGroup.add(stacheLeft);
+  
+  const stacheRight = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.03, 0.2, 4, 8),
+    facialHairMat
+  );
+  stacheRight.position.set(0.18, 0.02, 0);
+  stacheRight.rotation.z = -0.3;
+  mustacheGroup.add(stacheRight);
+  
+  // GOATEE
+  const goateeGroup = new THREE.Group();
+  goateeGroup.position.set(0, -0.55, 0.88);
+  avatar.add(goateeGroup);
+  
+  // Soul patch
+  const soulPatch = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.025, 0.08, 4, 8),
+    facialHairMat
+  );
+  goateeGroup.add(soulPatch);
+  
+  // Chin beard
+  const chinBeard = new THREE.Mesh(
+    new THREE.SphereGeometry(0.12, 16, 16),
+    facialHairMat
+  );
+  chinBeard.position.set(0, -0.12, -0.02);
+  chinBeard.scale.set(0.8, 1, 0.6);
+  goateeGroup.add(chinBeard);
+  
+  // NOSE - Stylized
+  const nose = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 32, 16),
+    skinMat
+  );
+  nose.position.set(0, -0.02, 0.98);
+  nose.scale.set(0.7, 1, 0.8);
+  avatar.add(nose);
+  
+  // MOUTH - Subtle smile
+  const mouthCurve = new THREE.Mesh(
+    new THREE.TorusGeometry(0.15, 0.025, 8, 32, Math.PI),
+    new THREE.MeshStandardMaterial({color: 0x8b7355, roughness: 0.6})
+  );
+  mouthCurve.rotation.x = Math.PI;
+  mouthCurve.position.set(0, -0.35, 0.9);
+  mouthCurve.rotation.z = Math.PI; // Smile curve
+  avatar.add(mouthCurve);
+  
+  // EARS
+  const earGeo = new THREE.SphereGeometry(0.12, 16, 16);
+  const leftEar = new THREE.Mesh(earGeo, skinMat);
+  leftEar.position.set(-0.92, 0, 0);
+  leftEar.scale.set(0.25, 0.8, 0.4);
+  leftEar.rotation.z = 0.1;
+  avatar.add(leftEar);
+  
+  const rightEar = new THREE.Mesh(earGeo, skinMat);
+  rightEar.position.set(0.92, 0, 0);
+  rightEar.scale.set(0.25, 0.8, 0.4);
+  rightEar.rotation.z = -0.1;
+  avatar.add(rightEar);
+  
+  // NECK
+  const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.35, 0.4, 0.7, 32),
+    skinMat
+  );
+  neck.position.y = -1.2;
+  avatar.add(neck);
+  
+  // SHOULDERS/BODY
+  const bodyGroup = new THREE.Group();
+  bodyGroup.position.y = -1.8;
+  avatar.add(bodyGroup);
+  
+  const shoulders = new THREE.Mesh(
+    new THREE.SphereGeometry(1.4, 32, 16),
+    new THREE.MeshStandardMaterial({color: 0x1f2937, roughness: 0.7})
+  );
+  shoulders.scale.set(1, 0.4, 0.5);
+  bodyGroup.add(shoulders);
+  
+  // CYAN GLOW BACKGROUND
+  const glowGeo = new THREE.SphereGeometry(2.5, 32, 32);
+  const glowMat = new THREE.MeshBasicMaterial({
+    color: 0x5bc8f5,
+    transparent: true,
+    opacity: 0.08,
+    side: THREE.BackSide
+  });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+  glow.position.z = -1;
+  avatar.add(glow);
+  
+  // Outer glow
+  const outerGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(3.5, 32, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0x5bc8f5,
+      transparent: true,
+      opacity: 0.03,
+      side: THREE.BackSide
+    })
+  );
+  outerGlow.position.z = -1.5;
+  avatar.add(outerGlow);
+  
+  return {
+    mesh: avatar,
+    head: head,
+    eyesGroup: eyesGroup,
+    leftPupil: leftPupil,
+    rightPupil: rightPupil,
+    leftBrow: leftBrow,
+    rightBrow: rightBrow,
+    leftEye: leftEye,
+    rightEye: rightEye
+  };
+}
+
+function makeScene(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+  camera.position.z = 4;
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  
+  // Lighting setup for stylized look
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  keyLight.position.set(2, 3, 5);
+  keyLight.castShadow = true;
+  scene.add(keyLight);
+  
+  const fillLight = new THREE.DirectionalLight(0x5bc8f5, 0.4);
+  fillLight.position.set(-3, 1, 3);
+  scene.add(fillLight);
+  
+  const rimLight = new THREE.SpotLight(0x00f5c4, 1.0);
+  rimLight.position.set(0, 4, -4);
+  rimLight.lookAt(0, 0, 0);
+  scene.add(rimLight);
+  
+  const avatarData = createStylizedAvatar();
+  avatarData.mesh.scale.set(0.9, 0.9, 0.9);
+  scene.add(avatarData.mesh);
+  
+  return { scene, camera, renderer, avatarData, canvas };
+}
+
+function initThree() {
+  const home = makeScene('three-canvas');
+  const about = makeScene('about-canvas');
+  
+  homeRenderer = home.renderer;
+  aboutRenderer = about.renderer;
+  homeAvatarData = home.avatarData;
+  aboutAvatarData = about.avatarData;
+  
+  // Start with head down (sleeping)
+  homeAvatarData.mesh.rotation.x = 0.8;
+  aboutAvatarData.mesh.rotation.x = 0.8;
+  
+  let mouseX = 0, mouseY = 0, time = 0;
+  
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  function resizeCheck(s) {
+    const w = s.canvas.clientWidth, h = s.canvas.clientHeight;
+    if (s.canvas.width !== w || s.canvas.height !== h) {
+      s.renderer.setSize(w, h, false);
+      s.camera.aspect = w / h;
+      s.camera.updateProjectionMatrix();
+    }
+  }
+
+  // Wake up animation
+  const wakeUpInterval = setInterval(() => {
+    if (wakeUpProgress < 1) {
+      wakeUpProgress += 0.015;
+      const ease = 1 - Math.pow(1 - wakeUpProgress, 3);
+      
+      homeAvatarData.mesh.rotation.x = 0.8 * (1 - ease);
+      aboutAvatarData.mesh.rotation.x = 0.8 * (1 - ease);
+      
+      // Scale from 0 to 1.1
+      const scale = 0.9 * (0.2 + 0.9 * ease);
+      homeAvatarData.mesh.scale.set(scale, scale, scale);
+      aboutAvatarData.mesh.scale.set(scale, scale, scale);
+    } else {
+      isWakingUp = false;
+      clearInterval(wakeUpInterval);
+    }
+  }, 16);
+
+  function animateAvatar(data, targetX, targetY, damping, isAbout) {
+    if (!data) return;
+    
+    // Smooth look at
+    const headYaw = Math.max(-0.5, Math.min(0.5, targetX * 0.6));
+    const headPitch = Math.max(-0.3, Math.min(0.3, -targetY * 0.4));
+    
+    // Head rotation (excluding wake-up rotation)
+    if (!isWakingUp) {
+      data.mesh.rotation.y += (headYaw - data.mesh.rotation.y) * damping;
+      data.mesh.rotation.x += (headPitch - data.mesh.rotation.x) * damping;
+    }
+    
+    // Eyes move more than head
+    const eyeYaw = targetX * 0.4;
+    const eyePitch = -targetY * 0.3;
+    
+    data.eyesGroup.rotation.y += (eyeYaw - data.eyesGroup.rotation.y) * damping * 2;
+    data.eyesGroup.rotation.x += (eyePitch - data.eyesGroup.rotation.x) * damping * 2;
+    
+    // Breathing
+    const breath = Math.sin(time * 2) * 0.005;
+    data.mesh.position.y = breath;
+    
+    // Blink
+    const blinkSys = isAbout ? aboutBlink : homeBlink;
+    blinkSys.update(data.leftEye, data.rightEye);
+  }
+
+  (function animate() {
+    requestAnimationFrame(animate);
+    time += 0.016;
+    
+    resizeCheck(home);
+    resizeCheck(about);
+    
+    // Home avatar - follows mouse
+    animateAvatar(homeAvatarData, mouseX, mouseY, 0.08, false);
+    
+    // About avatar - looks at quote
+    const aboutTargetX = aboutLookAway ? 0.7 : mouseX;
+    const aboutTargetY = aboutLookAway ? -0.1 : mouseY;
+    animateAvatar(aboutAvatarData, aboutTargetX, aboutTargetY, 0.06, true);
+    
+    home.renderer.render(home.scene, home.camera);
+    about.renderer.render(about.scene, about.camera);
+  })();
+}
+</script>
+</body>
+</html>
