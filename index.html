@@ -57,6 +57,7 @@
       <button class="nav-link" id="navAbout" onclick="goPage('about')">About</button>
       <button class="nav-link" id="navProjects" onclick="goPage('projects')">Projects</button>
     </div>
+    <div class="nav-progress-bar" id="navProgressBar"><div class="nav-progress-fill" id="navProgressFill"></div></div>
   </nav>
 
   <!-- HOME -->
@@ -87,18 +88,98 @@
 
   <!-- ABOUT -->
   <div class="page" id="page-about">
-    <button class="icon-back-btn" onclick="goPage('home')">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="about-canvas-wrap"><canvas id="about-canvas"></canvas></div>
-    <div class="about-right">
-      <div class="about-bg-text">SM</div>
-      <p class="about-tag">About me</p>
-      <div class="about-quote-box">
-        <span class="about-quote-icon">"</span>
-        <p class="about-quote-text">I am an Independent Developer from Algeria, passionate about building clean, scalable, and impactful digital experiences. I work with MySQL, PHP, HTML, CSS, JavaScript, and Three.js to craft both functional and visually engaging applications. With a competitive programming mindset, I enjoy solving complex problems and turning ideas into efficient, high-performance solutions. I am driven by curiosity, continuous learning, and the challenge of pushing my limits every day. For me, development is not just about writing code — it's about creating experiences, optimizing performance, and building projects that truly make a difference.</p>
-        <p class="about-quote-author">— Souilah Moncef</p>
-      </div>
+    <div class="about-scroll-page" id="aboutScrollPage">
+
+      <!-- HERO -->
+      <section class="ab-section ab-section--hero">
+        <h1 class="ab-big-title"><span class="ab-title-white">ABOUT</span> <span class="ab-title-blue">ME</span></h1>
+        <div class="ab-underline"></div>
+        <div class="ab-quote-wrap">
+          <p class="ab-quote-text" id="abQuoteText"></p>
+        </div>
+      </section>
+
+      <!-- TECH STACK + GLOBE -->
+      <section class="ab-section ab-section--globe" id="abGlobeSection">
+        <h2 class="ab-big-title"><span class="ab-title-white">TECH</span> <span class="ab-title-blue">STACK</span></h2>
+        <div class="ab-underline"></div>
+        <div class="ab-globe-wrap">
+          <canvas id="globeCanvas"></canvas>
+          <div class="ab-globe-hint"></div>
+        </div>
+      </section>
+
+      <!-- CORE STRENGTHS -->
+      <section class="ab-section ab-section--strengths" id="abStrengthsSection">
+        <h2 class="ab-big-title"><span class="ab-title-white">CORE</span> <span class="ab-title-blue">STRENGTHS</span></h2>
+        <div class="ab-underline"></div>
+        <div class="ab-strengths-grid">
+          <div class="ab-strength-card">
+            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+            <span class="ab-strength-name">Problem Solving</span>
+            <p class="ab-strength-desc">Breaking complex challenges into elegant, efficient solutions</p>
+          </div>
+          <div class="ab-strength-card">
+            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <span class="ab-strength-name">Performance Optimization</span>
+            <p class="ab-strength-desc">Writing fast, lean code that scales under any pressure</p>
+          </div>
+          <div class="ab-strength-card">
+            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <span class="ab-strength-name">Clean Architecture</span>
+            <p class="ab-strength-desc">Structured, maintainable and scalable codebases from day one</p>
+          </div>
+          <div class="ab-strength-card">
+            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+            <span class="ab-strength-name">UI/UX Detail Focus</span>
+            <p class="ab-strength-desc">Pixel-perfect interfaces with smooth, intentional interactions</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT FOOTER -->
+      <section class="ab-section ab-section--contact" id="abContactSection">
+        <div class="ab-contact-grid">
+          <!-- LEFT: Name + info -->
+          <div class="ab-contact-col ab-contact-left">
+            <div class="ab-contact-name">
+              <span class="ab-contact-name-blue">SOUILAH</span>
+              <span class="ab-contact-name-white">MONCEF</span>
+            </div>
+            <div class="ab-contact-info-group">
+              <div class="ab-contact-label">Email</div>
+              <a class="ab-contact-email" id="abContactEmail" onclick="copyAbEmail(event)">souilahmoncef99@gmail.com</a>
+              <span class="ab-contact-copied" id="abEmailCopied">Copied!</span>
+            </div>
+            <div class="ab-contact-info-group">
+              <div class="ab-contact-label">Location</div>
+              <div class="ab-contact-value">Algeria</div>
+            </div>
+          </div>
+
+          <!-- MIDDLE: Social links -->
+          <div class="ab-contact-col ab-contact-mid">
+            <div class="ab-contact-label">Social</div>
+            <a class="ab-contact-social" href="https://github.com/Moncef37i" target="_blank">
+              <span class="ab-contact-social-row">Github <span class="ab-social-arrow">↗</span></span>
+              <span class="ab-social-line"></span>
+            </a>
+            <a class="ab-contact-social" href="https://www.linkedin.com/in/moncef-souilah37i/" target="_blank">
+              <span class="ab-contact-social-row">Linkedin <span class="ab-social-arrow">↗</span></span>
+              <span class="ab-social-line"></span>
+            </a>
+          </div>
+
+          <!-- RIGHT: Credit + copyright -->
+          <div class="ab-contact-col ab-contact-right">
+            <div class="ab-contact-credit">
+              Designed and Developed by <span class="ab-contact-name-blue">Souilah</span> <span class="ab-contact-name-white">Moncef</span>
+            </div>
+            <div class="ab-contact-copy">© 2026</div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </div>
 
