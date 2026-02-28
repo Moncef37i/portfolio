@@ -45,11 +45,14 @@
     <div class="nav-email-wrap">
       <div class="nav-email" id="emailBtn" onclick="copyEmail()">
         <span class="copy-flash">Copied!</span>
-        souilahmoncef99@gmail.com
+        <span class="nav-email-text" id="emailDisplay">souilahmoncef99&#64;gmail&#46;com</span>
       </div>
       <div class="nav-email-hint">click to copy</div>
     </div>
     <div class="nav-right">
+      <button class="nav-link nav-link-icon" id="navHome" onclick="goPage('home')" title="Home">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" style="display:block"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
       <button class="nav-link" id="navAbout" onclick="goPage('about')">About</button>
       <button class="nav-link" id="navProjects" onclick="goPage('projects')">Projects</button>
     </div>
@@ -144,7 +147,9 @@
       </div>
       <div class="pd-body">
         <div class="pd-screenshot">
-          <div class="pd-shot-inner">
+          <img id="pd-screenshot-img" src="" alt="Project Screenshot" style="display:none;">
+          <div class="pd-scan-line"></div>
+          <div class="pd-shot-inner" id="pd-shot-placeholder">
             <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             <div class="pd-shot-label">SCREENSHOT</div>
           </div>

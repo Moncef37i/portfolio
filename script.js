@@ -1,10 +1,10 @@
 const PROJECTS = [
-  { name: 'E-Commerce Platform', desc: 'Full-stack online shop with product listings, shopping cart, user authentication, order management, and a complete admin dashboard for inventory control.', stack: ['PHP', 'MySQL', 'JavaScript', 'CSS', 'HTML'], demo: '#', github: 'https://github.com/Moncef37i' },
-  { name: 'Portfolio Builder', desc: 'A drag-and-drop portfolio generator designed for creatives and freelancers. Users can build, customize, and export their personal portfolio site with zero coding.', stack: ['HTML', 'CSS', 'JavaScript'], demo: '#', github: 'https://github.com/Moncef37i' },
-  { name: 'Task Manager App', desc: 'A Kanban-style task management application with live status updates, team collaboration features, priority tagging, and a real-time activity feed.', stack: ['JavaScript', 'PHP', 'MySQL', 'CSS'], demo: '#', github: 'https://github.com/Moncef37i' },
-  { name: 'Restaurant Website', desc: 'Animated landing page for a restaurant with smooth scroll effects, a dynamic menu showcase, and an integrated online reservation system.', stack: ['HTML', 'CSS', 'JavaScript'], demo: '#', github: 'https://github.com/Moncef37i' },
-  { name: 'Blog CMS', desc: 'A custom Content Management System with markdown editor support, category management, built-in SEO tools, and a clean reader-facing blog interface.', stack: ['PHP', 'MySQL', 'CSS', 'HTML'], demo: '#', github: 'https://github.com/Moncef37i' },
-  { name: 'Coming Soon', desc: 'A new project is currently in development. Something exciting is on the way — stay tuned and check back soon.', stack: ['TBD'], demo: '#', github: 'https://github.com/Moncef37i' }
+  { name: 'E-Commerce Platform', desc: 'Full-stack online shop with product listings, shopping cart, user authentication, order management, and a complete admin dashboard for inventory control.', stack: ['PHP', 'MySQL', 'JavaScript', 'CSS', 'HTML'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' },
+  { name: 'Portfolio Builder', desc: 'A drag-and-drop portfolio generator designed for creatives and freelancers. Users can build, customize, and export their personal portfolio site with zero coding.', stack: ['HTML', 'CSS', 'JavaScript'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' },
+  { name: 'Task Manager App', desc: 'A Kanban-style task management application with live status updates, team collaboration features, priority tagging, and a real-time activity feed.', stack: ['JavaScript', 'PHP', 'MySQL', 'CSS'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' },
+  { name: 'Restaurant Website', desc: 'Animated landing page for a restaurant with smooth scroll effects, a dynamic menu showcase, and an integrated online reservation system.', stack: ['HTML', 'CSS', 'JavaScript'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' },
+  { name: 'Blog CMS', desc: 'A custom Content Management System with markdown editor support, category management, built-in SEO tools, and a clean reader-facing blog interface.', stack: ['PHP', 'MySQL', 'CSS', 'HTML'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' },
+  { name: 'Coming Soon', desc: 'A new project is currently in development. Something exciting is on the way — stay tuned and check back soon.', stack: ['TBD'], demo: '#', github: 'https://github.com/Moncef37i', screenshot: '' }
 ];
 
 // ─── CURSOR ───────────────────────────────────────────────────────────────────
@@ -27,7 +27,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 function bindHover() {
-  document.querySelectorAll('a,button,.nav-email,.hr-skill,.proj-card,.pd-btn,.icon-back-btn,.pd-back').forEach(el => {
+  document.querySelectorAll('a,button,.nav-email,.hr-skill,.proj-card,.pd-btn,.icon-back-btn,.pd-back,.home-icon-btn').forEach(el => {
     el.addEventListener('mouseenter', () => curEl.classList.add('hover'));
     el.addEventListener('mouseleave', () => curEl.classList.remove('hover'));
   });
@@ -90,13 +90,24 @@ function tick() {
   }
 }
 setTimeout(tick, 400);
+document.getElementById('navHome').classList.add('active');
 
 function launch() {
   document.getElementById('loader').classList.add('ld-exit');
   setTimeout(() => {
     document.getElementById('app').classList.add('show');
     document.getElementById('loader').style.display = 'none';
-    initThree();
+    // Wait for THREE to be available before init
+    if (typeof THREE !== 'undefined') {
+      initThree();
+    } else {
+      const wait = setInterval(() => {
+        if (typeof THREE !== 'undefined') {
+          clearInterval(wait);
+          initThree();
+        }
+      }, 50);
+    }
   }, 800);
 }
 
@@ -107,17 +118,18 @@ function goPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (name === 'home') { document.getElementById('navHome').classList.add('active'); aboutLookAway = false; }
   if (name === 'about') { document.getElementById('navAbout').classList.add('active'); aboutLookAway = true; }
   if (name === 'projects') {
     document.getElementById('navProjects').classList.add('active');
     document.getElementById('proj-detail-view').style.display = 'none';
     document.getElementById('proj-grid-view').style.display = 'flex';
   }
-  if (name === 'home') aboutLookAway = false;
 }
 
 function copyEmail() {
-  navigator.clipboard.writeText('souilahmoncef99@gmail.com').then(() => {
+  const email = 'souilahmoncef99@gmail.com';
+  navigator.clipboard.writeText(email).then(() => {
     const b = document.getElementById('emailBtn');
     b.classList.add('copied');
     setTimeout(() => b.classList.remove('copied'), 2000);
@@ -140,8 +152,32 @@ function openDetail(i) {
   document.getElementById('pd-stack').innerHTML = p.stack.map(t => `<span class="pd-stack-tag">${t}</span>`).join('');
   document.getElementById('pd-demo').href = p.demo;
   document.getElementById('pd-github').href = p.github;
+
+  // Screenshot logic
+  const imgEl = document.getElementById('pd-screenshot-img');
+  const placeholder = document.getElementById('pd-shot-placeholder');
+  if (p.screenshot) {
+    imgEl.style.display = 'block';
+    imgEl.classList.remove('loaded');
+    imgEl.src = p.screenshot;
+    imgEl.onload = () => imgEl.classList.add('loaded');
+    placeholder.style.display = 'none';
+  } else {
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    placeholder.style.display = 'flex';
+  }
+
   document.getElementById('proj-grid-view').style.display = 'none';
-  document.getElementById('proj-detail-view').style.display = 'flex';
+
+  // Show with entry animation
+  const dv = document.getElementById('proj-detail-view');
+  dv.style.display = 'flex';
+  dv.classList.remove('animating');
+  void dv.offsetWidth; // force reflow
+  dv.classList.add('animating');
+  setTimeout(() => dv.classList.remove('animating'), 800);
+
   bindHover();
 }
 
