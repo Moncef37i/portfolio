@@ -92,15 +92,19 @@ const sceneHome={},sceneAbout={};
 // ═══════════════════════════════════════════════════════════════════
 // CURSOR
 // ═══════════════════════════════════════════════════════════════════
+const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 const curEl=document.getElementById('cur'),curDot=document.getElementById('curDot');
 let mx=0,my=0,tx=0,ty=0,cursorVisible=false;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  curDot.style.left=mx+'px';curDot.style.top=my+'px';
-  if(!cursorVisible){cursorVisible=true;curEl.classList.add('visible');curDot.classList.add('visible');}
-});
-(function animateCursor(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;curEl.style.left=tx+'px';curEl.style.top=ty+'px';requestAnimationFrame(animateCursor);})();
+if(!isTouchDevice){
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    curDot.style.left=mx+'px';curDot.style.top=my+'px';
+    if(!cursorVisible){cursorVisible=true;curEl.classList.add('visible');curDot.classList.add('visible');}
+  });
+  (function animateCursor(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;curEl.style.left=tx+'px';curEl.style.top=ty+'px';requestAnimationFrame(animateCursor);})();
+}
 function bindHover(){
+  if(isTouchDevice) return;
   document.querySelectorAll('a,button,.nav-email,.hr-skill,.proj-card,.pd-btn,.icon-back-btn,.pd-back,.social-item,.cv-side,.pd-stack-tag,.ab-contact-email,.ab-contact-social').forEach(el=>{
     el.addEventListener('mouseenter',()=>curEl.classList.add('hover'));
     el.addEventListener('mouseleave',()=>curEl.classList.remove('hover'));
