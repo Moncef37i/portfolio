@@ -61,138 +61,53 @@
 })();
 
 // ═══════════════════════════════════════════════════════════════════
-// WARP SPEED LOADER
+// CINEMATIC VIDEO LOADER
 // ═══════════════════════════════════════════════════════════════════
-(function initWarp() {
-  const canvas = document.getElementById('warp-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, running = true;
-  let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+function initVideoLoader() {
+  const loader   = document.getElementById('loader');
+  const video    = document.getElementById('ld-video');
+  const text1    = document.getElementById('ldText1');   // "ENTERING THE UNIVERSE..."
+  const text2    = document.getElementById('ldText2');   // "WELCOME TO MY UNIVERSE"
+  const boot1    = document.getElementById('ldBoot1');
+  const boot2    = document.getElementById('ldBoot2');
+  const boot3    = document.getElementById('ldBoot3');
+  const boot4    = document.getElementById('ldBoot4');
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    cx = W / 2; cy = H / 2;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-  let warpSpeed = 0; // 0 = slow drift, 1 = full warp
-  let targetSpeed = 0;
+  if (!loader || !video) return;
 
-  // Create warp stars
-  const WARP_COUNT = 320;
-  const warpStars = Array.from({ length: WARP_COUNT }, () => createWarpStar());
-
-  function createWarpStar() {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = Math.random() * 0.3 + 0.02; // normalized distance from center
-    return {
-      angle,
-      dist,       // current distance from center (normalized 0-1)
-      speed: Math.random() * 0.004 + 0.002,
-      length: Math.random() * 0.02 + 0.005,
-      hue: 185 + Math.random() * 30,
-      alpha: Math.random() * 0.7 + 0.3,
-      thickness: Math.random() * 1.2 + 0.3,
+  // Play video — muted first (browser requires it), unmute on first interaction
+  if (video) {
+    video.muted = true;
+    video.loop = true;
+    video.play().catch(function() {});
+    // Unmute as soon as user touches anything
+    var unmute = function() {
+      video.muted = false;
+      video.volume = 1.0;
+      document.removeEventListener('click', unmute);
+      document.removeEventListener('keydown', unmute);
     };
+    document.addEventListener('click', unmute);
+    document.addEventListener('keydown', unmute);
   }
+  startLoaderTimers();
 
-  function resetWarpStar(s) {
-    s.angle = Math.random() * Math.PI * 2;
-    s.dist = Math.random() * 0.05 + 0.01;
-    s.speed = Math.random() * 0.004 + 0.002;
-    s.length = Math.random() * 0.02 + 0.005;
-    s.hue = 185 + Math.random() * 30;
-    s.alpha = Math.random() * 0.7 + 0.3;
-    s.thickness = Math.random() * 1.2 + 0.3;
-  }
-
-  let frame = 0;
-  function drawWarp() {
-    if (!running) return;
-    requestAnimationFrame(drawWarp);
-    frame++;
-
-    // Ramp up warp speed over time
-    if (warpSpeed < targetSpeed) {
-      warpSpeed = Math.min(targetSpeed, warpSpeed + 0.008);
-    }
-
-    // Dark background with slight trail
-    ctx.fillStyle = `rgba(3, 3, 15, ${0.18 + warpSpeed * 0.55})`;
-    ctx.fillRect(0, 0, W, H);
-
-    // Radial dark center
-    const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W, H) * 0.15);
-    centerGlow.addColorStop(0, 'rgba(3,3,15,0.95)');
-    centerGlow.addColorStop(1, 'rgba(3,3,15,0)');
-    ctx.fillStyle = centerGlow;
-    ctx.beginPath(); ctx.arc(cx, cy, Math.min(W, H) * 0.15, 0, Math.PI * 2); ctx.fill();
-
-    const speedFactor = 0.3 + warpSpeed * 4.5;
-    const R = Math.max(W, H);
-
-    warpStars.forEach(s => {
-      // Move star outward
-      s.dist += s.speed * speedFactor * 0.012;
-
-      if (s.dist > 1.2) {
-        resetWarpStar(s);
-        return;
-      }
-
-      // Convert polar to screen coords
-      const px = cx + Math.cos(s.angle) * s.dist * R * 0.7;
-      const py = cy + Math.sin(s.angle) * s.dist * R * 0.7;
-
-      // Tail length grows with speed and distance
-      const tailLen = (s.length + warpSpeed * 0.12) * R * 0.7 * Math.pow(s.dist, 0.6);
-      const tx = px - Math.cos(s.angle) * tailLen;
-      const ty = py - Math.sin(s.angle) * tailLen;
-
-      // Brightness by distance + speed
-      const brightness = Math.min(1, s.dist * 2.5 + warpSpeed * 0.5);
-      const alpha = s.alpha * brightness;
-
-      const grad = ctx.createLinearGradient(tx, ty, px, py);
-      grad.addColorStop(0, `hsla(${s.hue},90%,70%,0)`);
-      grad.addColorStop(0.6, `hsla(${s.hue},90%,78%,${alpha * 0.4})`);
-      grad.addColorStop(1, `hsla(${s.hue},95%,88%,${alpha})`);
-
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(px, py);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = s.thickness * (0.6 + warpSpeed * 0.8) * (0.4 + s.dist * 0.6);
-      ctx.stroke();
-
-      // Bright dot at tip when fast
-      if (warpSpeed > 0.4) {
-        ctx.beginPath();
-        ctx.arc(px, py, s.thickness * 0.8 * warpSpeed, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${s.hue},100%,90%,${alpha * warpSpeed})`;
-        ctx.fill();
-      }
+  // All timers start AFTER user clicks enter (so they're in sync with video)
+  function startLoaderTimers() {
+    var bl = [boot1, boot2, boot3, boot4];
+    [200, 900, 1800, 3400].forEach(function(d, i) {
+      if (!bl[i]) return;
+      setTimeout(function() { bl[i].classList.add('ld-boot-visible'); }, d);
     });
-
-    // Center burst glow when warping
-    if (warpSpeed > 0.1) {
-      const burst = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W,H) * 0.4 * warpSpeed);
-      burst.addColorStop(0, `rgba(91,200,245,${0.06 * warpSpeed})`);
-      burst.addColorStop(0.4, `rgba(60,140,255,${0.03 * warpSpeed})`);
-      burst.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath(); ctx.arc(cx, cy, Math.min(W,H) * 0.4, 0, Math.PI * 2);
-      ctx.fillStyle = burst; ctx.fill();
-    }
+    setTimeout(function() { if (text1) text1.classList.add('ld-visible'); }, 3000);
+    setTimeout(function() {
+      if (text1) { text1.classList.add('ld-hide'); text1.classList.remove('ld-visible'); }
+      setTimeout(function() { if (text2) text2.classList.add('ld-visible'); }, 500);
+    }, 6000);
+    setTimeout(launch, 8000);
   }
 
-  drawWarp();
-
-  // Expose speed control
-  window._warpSetSpeed = function(s) { targetSpeed = s; };
-  window._warpStop = function() { running = false; };
-})();
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // DATA
@@ -242,7 +157,7 @@ function bindHover(){
 // ═══════════════════════════════════════════════════════════════════
 // LOGO
 // ═══════════════════════════════════════════════════════════════════
-const smLogo=document.getElementById('smLogo') || {}; let smHovered=false;
+const smLogo=document.getElementById('smLogo'); let smHovered=false;
 function buildLetters(text,visible){
   smLogo.innerHTML=''; [...text].forEach((ch,i)=>{
     const s=document.createElement('span'); s.className='logo-letter'+(visible?' vis':'');
@@ -253,58 +168,35 @@ smLogo.addEventListener('mouseenter',()=>{smHovered=true;buildLetters('SOUILAH M
 smLogo.addEventListener('mouseleave',()=>{smHovered=false;smLogo.querySelectorAll('.logo-letter').forEach(l=>{l.style.transitionDelay='0ms';l.classList.remove('vis');});setTimeout(()=>{if(!smHovered)buildLetters('SM',true);},200);});
 
 // ═══════════════════════════════════════════════════════════════════
-// WARP LOADER — staged animation
+// LAUNCH — reveal portfolio after loader
 // ═══════════════════════════════════════════════════════════════════
-let pct = 0;
-
-function initLoader() {
-  const ldFill = document.getElementById('ldFill');
-  const ldPct = document.getElementById('ldPct');
-  const ldTopline = document.getElementById('ldTopline');
-  const ldWelcome = document.getElementById('ldWelcome');
-  if (!ldFill || !ldPct || !ldTopline || !ldWelcome) return;
-
-  // Ramp warp speed over time
-  if (window._warpSetSpeed) window._warpSetSpeed(0.1);
-  setTimeout(() => { if (window._warpSetSpeed) window._warpSetSpeed(0.6); }, 600);
-  setTimeout(() => { if (window._warpSetSpeed) window._warpSetSpeed(1.0); }, 1500);
-
-  function tick() {
-    pct = Math.min(100, pct + Math.max(0.5, (100 - pct) * 0.025));
-    ldFill.style.width = pct + '%';
-    ldTopline.style.width = pct + '%';
-    ldPct.textContent = Math.floor(pct);
-
-    if (pct < 100) {
-      setTimeout(tick, 25);
-    } else {
-      ldFill.style.width = '100%';
-      ldPct.textContent = '100';
-      setTimeout(() => {
-        ldWelcome.textContent = "YOU'VE ARRIVED IN MY UNIVERSE";
-        ldWelcome.classList.add('arrived');
-        if (window._warpSetSpeed) window._warpSetSpeed(0.2);
-        setTimeout(launch, 1400);
-      }, 300);
-    }
-  }
-
-  setTimeout(tick, 400);
-}
-
-// Start loader after DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initLoader);
-} else {
-  initLoader();
-}
-
 function launch() {
-  window._warpStop && window._warpStop();
-  document.getElementById('loader').classList.add('ld-exit');
+  const loader = document.getElementById('loader');
+  const app    = document.getElementById('app');
+  const flash  = document.getElementById('ld-flash');
+  const vid    = document.getElementById('ld-video');
+  if (!loader) return;
+
+  // Step 1: video zooms in + text fades (0.55s)
+  loader.classList.add('ld-exit');
+
+  // Step 2: white flash at peak of zoom (0.45s in)
   setTimeout(() => {
-    document.getElementById('app').classList.add('show');
-    document.getElementById('loader').style.display = 'none';
+    if (flash) flash.classList.add('ld-flash-on');
+  }, 450);
+
+  // Step 3: stop video at flash peak
+  setTimeout(() => {
+    if (vid) { vid.pause(); vid.src = ''; }
+  }, 500);
+
+  // Step 4: show portfolio under the flash
+  setTimeout(() => {
+    loader.style.display = 'none';
+    if (app) {
+      app.style.display = 'block';
+      app.style.opacity = '0';
+    }
     initCardThumbs();
     buildProjectCards();
     initScrollSystem();
@@ -312,7 +204,25 @@ function launch() {
     initGlobe();
     buildQuote();
     bindHover();
-  }, 800);
+  }, 520);
+
+  // Step 5: flash fades out revealing portfolio
+  setTimeout(() => {
+    if (flash) {
+      flash.classList.remove('ld-flash-on');
+      flash.classList.add('ld-flash-out');
+    }
+    if (app) {
+      app.style.transition = 'opacity 1.1s cubic-bezier(.4,0,.2,1)';
+      app.style.opacity = '1';
+    }
+  }, 560);
+
+  // Step 6: clean up flash
+  setTimeout(() => {
+    if (flash) flash.style.display = 'none';
+    if (app) app.classList.add('show');
+  }, 1800);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -692,3 +602,8 @@ function initGlobe(){
   function loop(){raf=requestAnimationFrame(loop);const w=canvas.width,h=canvas.height;if(!w||!h)return;ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,R=Math.min(w,h)*0.48;if(!isDragging){rotY+=velY;velY+=(-0.005-velY)*0.02;velX*=0.95;rotX+=velX;rotX+=(0.3-rotX)*0.01;}drawGrid(cx,cy,R);drawSkills(cx,cy,R);}
   loop();
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// START — called after all functions are defined
+// ═══════════════════════════════════════════════════════════════════
+initVideoLoader();
