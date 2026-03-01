@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// GALAXY BACKGROUND — exact original
+// GALAXY BACKGROUND
 // ═══════════════════════════════════════════════════════════════════
 (function initGalaxy() {
   const canvas = document.getElementById('galaxy-canvas');
@@ -61,6 +61,140 @@
 })();
 
 // ═══════════════════════════════════════════════════════════════════
+// WARP SPEED LOADER
+// ═══════════════════════════════════════════════════════════════════
+(function initWarp() {
+  const canvas = document.getElementById('warp-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, running = true;
+  let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W / 2; cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  let warpSpeed = 0; // 0 = slow drift, 1 = full warp
+  let targetSpeed = 0;
+
+  // Create warp stars
+  const WARP_COUNT = 320;
+  const warpStars = Array.from({ length: WARP_COUNT }, () => createWarpStar());
+
+  function createWarpStar() {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * 0.3 + 0.02; // normalized distance from center
+    return {
+      angle,
+      dist,       // current distance from center (normalized 0-1)
+      speed: Math.random() * 0.004 + 0.002,
+      length: Math.random() * 0.02 + 0.005,
+      hue: 185 + Math.random() * 30,
+      alpha: Math.random() * 0.7 + 0.3,
+      thickness: Math.random() * 1.2 + 0.3,
+    };
+  }
+
+  function resetWarpStar(s) {
+    s.angle = Math.random() * Math.PI * 2;
+    s.dist = Math.random() * 0.05 + 0.01;
+    s.speed = Math.random() * 0.004 + 0.002;
+    s.length = Math.random() * 0.02 + 0.005;
+    s.hue = 185 + Math.random() * 30;
+    s.alpha = Math.random() * 0.7 + 0.3;
+    s.thickness = Math.random() * 1.2 + 0.3;
+  }
+
+  let frame = 0;
+  function drawWarp() {
+    if (!running) return;
+    requestAnimationFrame(drawWarp);
+    frame++;
+
+    // Ramp up warp speed over time
+    if (warpSpeed < targetSpeed) {
+      warpSpeed = Math.min(targetSpeed, warpSpeed + 0.008);
+    }
+
+    // Dark background with slight trail
+    ctx.fillStyle = `rgba(3, 3, 15, ${0.18 + warpSpeed * 0.55})`;
+    ctx.fillRect(0, 0, W, H);
+
+    // Radial dark center
+    const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W, H) * 0.15);
+    centerGlow.addColorStop(0, 'rgba(3,3,15,0.95)');
+    centerGlow.addColorStop(1, 'rgba(3,3,15,0)');
+    ctx.fillStyle = centerGlow;
+    ctx.beginPath(); ctx.arc(cx, cy, Math.min(W, H) * 0.15, 0, Math.PI * 2); ctx.fill();
+
+    const speedFactor = 0.3 + warpSpeed * 4.5;
+    const R = Math.max(W, H);
+
+    warpStars.forEach(s => {
+      // Move star outward
+      s.dist += s.speed * speedFactor * 0.012;
+
+      if (s.dist > 1.2) {
+        resetWarpStar(s);
+        return;
+      }
+
+      // Convert polar to screen coords
+      const px = cx + Math.cos(s.angle) * s.dist * R * 0.7;
+      const py = cy + Math.sin(s.angle) * s.dist * R * 0.7;
+
+      // Tail length grows with speed and distance
+      const tailLen = (s.length + warpSpeed * 0.12) * R * 0.7 * Math.pow(s.dist, 0.6);
+      const tx = px - Math.cos(s.angle) * tailLen;
+      const ty = py - Math.sin(s.angle) * tailLen;
+
+      // Brightness by distance + speed
+      const brightness = Math.min(1, s.dist * 2.5 + warpSpeed * 0.5);
+      const alpha = s.alpha * brightness;
+
+      const grad = ctx.createLinearGradient(tx, ty, px, py);
+      grad.addColorStop(0, `hsla(${s.hue},90%,70%,0)`);
+      grad.addColorStop(0.6, `hsla(${s.hue},90%,78%,${alpha * 0.4})`);
+      grad.addColorStop(1, `hsla(${s.hue},95%,88%,${alpha})`);
+
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(px, py);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = s.thickness * (0.6 + warpSpeed * 0.8) * (0.4 + s.dist * 0.6);
+      ctx.stroke();
+
+      // Bright dot at tip when fast
+      if (warpSpeed > 0.4) {
+        ctx.beginPath();
+        ctx.arc(px, py, s.thickness * 0.8 * warpSpeed, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${s.hue},100%,90%,${alpha * warpSpeed})`;
+        ctx.fill();
+      }
+    });
+
+    // Center burst glow when warping
+    if (warpSpeed > 0.1) {
+      const burst = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W,H) * 0.4 * warpSpeed);
+      burst.addColorStop(0, `rgba(91,200,245,${0.06 * warpSpeed})`);
+      burst.addColorStop(0.4, `rgba(60,140,255,${0.03 * warpSpeed})`);
+      burst.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, Math.min(W,H) * 0.4, 0, Math.PI * 2);
+      ctx.fillStyle = burst; ctx.fill();
+    }
+  }
+
+  drawWarp();
+
+  // Expose speed control
+  window._warpSetSpeed = function(s) { targetSpeed = s; };
+  window._warpStop = function() { running = false; };
+})();
+
+// ═══════════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════════
 const TECH_LINKS = {
@@ -108,7 +242,7 @@ function bindHover(){
 // ═══════════════════════════════════════════════════════════════════
 // LOGO
 // ═══════════════════════════════════════════════════════════════════
-const smLogo=document.getElementById('smLogo'); let smHovered=false;
+const smLogo=document.getElementById('smLogo') || {}; let smHovered=false;
 function buildLetters(text,visible){
   smLogo.innerHTML=''; [...text].forEach((ch,i)=>{
     const s=document.createElement('span'); s.className='logo-letter'+(visible?' vis':'');
@@ -119,23 +253,58 @@ smLogo.addEventListener('mouseenter',()=>{smHovered=true;buildLetters('SOUILAH M
 smLogo.addEventListener('mouseleave',()=>{smHovered=false;smLogo.querySelectorAll('.logo-letter').forEach(l=>{l.style.transitionDelay='0ms';l.classList.remove('vis');});setTimeout(()=>{if(!smHovered)buildLetters('SM',true);},200);});
 
 // ═══════════════════════════════════════════════════════════════════
-// LOADER
+// WARP LOADER — staged animation
 // ═══════════════════════════════════════════════════════════════════
-let pct=0;
-const ldFill=document.getElementById('ldFill'),ldPct=document.getElementById('ldPct'),ldTopline=document.getElementById('ldTopline'),ldWelcome=document.getElementById('ldWelcome');
-function tick(){
-  pct=Math.min(100,pct+Math.max(.5,(100-pct)*.025));
-  ldFill.style.width=pct+'%'; ldTopline.style.width=pct+'%'; ldPct.textContent=Math.floor(pct);
-  if(pct<100){setTimeout(tick,25);}
-  else{ldFill.style.width='100%';ldPct.textContent='100';setTimeout(()=>{ldWelcome.textContent="You've Arrived in My Universe";ldWelcome.classList.add('show');setTimeout(launch,1200);},300);}
-}
-setTimeout(tick,400);
+let pct = 0;
 
-function launch(){
+function initLoader() {
+  const ldFill = document.getElementById('ldFill');
+  const ldPct = document.getElementById('ldPct');
+  const ldTopline = document.getElementById('ldTopline');
+  const ldWelcome = document.getElementById('ldWelcome');
+  if (!ldFill || !ldPct || !ldTopline || !ldWelcome) return;
+
+  // Ramp warp speed over time
+  if (window._warpSetSpeed) window._warpSetSpeed(0.1);
+  setTimeout(() => { if (window._warpSetSpeed) window._warpSetSpeed(0.6); }, 600);
+  setTimeout(() => { if (window._warpSetSpeed) window._warpSetSpeed(1.0); }, 1500);
+
+  function tick() {
+    pct = Math.min(100, pct + Math.max(0.5, (100 - pct) * 0.025));
+    ldFill.style.width = pct + '%';
+    ldTopline.style.width = pct + '%';
+    ldPct.textContent = Math.floor(pct);
+
+    if (pct < 100) {
+      setTimeout(tick, 25);
+    } else {
+      ldFill.style.width = '100%';
+      ldPct.textContent = '100';
+      setTimeout(() => {
+        ldWelcome.textContent = "YOU'VE ARRIVED IN MY UNIVERSE";
+        ldWelcome.classList.add('arrived');
+        if (window._warpSetSpeed) window._warpSetSpeed(0.2);
+        setTimeout(launch, 1400);
+      }, 300);
+    }
+  }
+
+  setTimeout(tick, 400);
+}
+
+// Start loader after DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLoader);
+} else {
+  initLoader();
+}
+
+function launch() {
+  window._warpStop && window._warpStop();
   document.getElementById('loader').classList.add('ld-exit');
-  setTimeout(()=>{
+  setTimeout(() => {
     document.getElementById('app').classList.add('show');
-    document.getElementById('loader').style.display='none';
+    document.getElementById('loader').style.display = 'none';
     initCardThumbs();
     buildProjectCards();
     initScrollSystem();
@@ -143,7 +312,7 @@ function launch(){
     initGlobe();
     buildQuote();
     bindHover();
-  },800);
+  }, 800);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -178,7 +347,6 @@ function buildProjectCards(){
     const card=document.createElement('div'); card.className='proj-h-card';
     const tags=p.stack.map(t=>{const url=TECH_LINKS[t];return url?`<a class="pd-stack-tag" href="${url}" target="_blank" rel="noopener">${t}</a>`:`<span class="pd-stack-tag">${t}</span>`;}).join('');
     const demoDisabled=p.demo==='#';
-    const ph=`<div class="proj-h-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>`;
     card.innerHTML=`
       <div class="proj-h-num">${String(i+1).padStart(2,'0')}</div>
       <div class="proj-h-top">
@@ -201,13 +369,11 @@ function buildProjectCards(){
         </a>
       </div>
     `;
-    // screenshot click → lightbox
     const ss=card.querySelector('.proj-h-screenshot');
     ss.style.cursor='zoom-in';
     ss.onclick=()=>window.openScreenshot&&window.openScreenshot(p.screenshot);
     track.appendChild(card);
   });
-  // Horizontal scroll on wheel
   initHorizontalScroll();
   bindHover();
 }
@@ -240,16 +406,10 @@ function initHorizontalScroll(){
 // ═══════════════════════════════════════════════════════════════════
 // SCROLL SYSTEM — progress bar + active nav
 // ═══════════════════════════════════════════════════════════════════
-// Section → which nav id gets highlighted
-// home     → navHome
-// about    → navHome  (About Me is grouped with Home)
-// techstack→ navAbout
-// strengths→ navAbout
-// projects → navProjects
-// contact  → navContact
+// FIXED: About Me + Tech Stack + Strengths → navAbout
 const SECTION_NAV_MAP = {
   'section-home':     'navHome',
-  'section-about':    'navHome',
+  'section-about':    'navAbout',   // FIXED: was navHome
   'section-techstack':'navAbout',
   'section-strengths':'navAbout',
   'section-projects': 'navProjects',
@@ -280,45 +440,132 @@ function initScrollSystem(){
     if(activeNav){ const el=document.getElementById(activeNav); if(el)el.classList.add('active'); }
   },{passive:true});
 
-  // Set initial active
   document.getElementById('navHome')?.classList.add('active');
 }
 
-// smooth scroll to section
+// ═══════════════════════════════════════════════════════════════════
+// SMOOTH SCROLL TO SECTION — FIXED: now truly smooth
+// ═══════════════════════════════════════════════════════════════════
 function scrollToSection(name){
   const sc=document.getElementById('scroll-container');
-  const map={home:'section-home',about:'section-about',techstack:'section-techstack',projects:'section-projects',contact:'section-contact'};
+  const map={
+    home:'section-home',
+    about:'section-about',
+    techstack:'section-techstack',
+    projects:'section-projects',
+    contact:'section-contact'
+  };
   const id=map[name]||('section-'+name);
-  const el=document.getElementById(id); if(!el||!sc)return;
-  sc.scrollTo({top:el.offsetTop,behavior:'smooth'});
+  const el=document.getElementById(id);
+  if(!el||!sc)return;
+
+  const targetScrollTop = el.offsetTop;
+  const startScrollTop = sc.scrollTop;
+  const distance = targetScrollTop - startScrollTop;
+  const duration = Math.min(1200, Math.max(500, Math.abs(distance) * 0.6));
+  const startTime = performance.now();
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+  }
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = easeInOutCubic(progress);
+    sc.scrollTop = startScrollTop + distance * ease;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SCROLL REVEAL — fade in sections + titles as they enter view
+// BIDIRECTIONAL SCROLL REVEAL
 // ═══════════════════════════════════════════════════════════════════
 function initScrollReveal(){
   const sc=document.getElementById('scroll-container');
+  const sections = [...document.querySelectorAll('.scroll-section:not(.section-home)')];
+  const innerEls = [...document.querySelectorAll('.ab-big-title,.ab-quote-wrap,.ab-globe-wrap,.ab-strength-card')];
 
-  const io=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(!e.isIntersecting)return;
-      const el=e.target;
-      if(el.classList.contains('scroll-section')){
-        el.classList.add('section-visible');
-      } else if(el.classList.contains('ab-big-title')||el.classList.contains('ab-quote-wrap')||el.classList.contains('ab-globe-wrap')){
-        el.classList.add('ab-visible');
-      } else if(el.classList.contains('ab-strength-card')){
-        const cards=[...document.querySelectorAll('.ab-strength-card')];
-        setTimeout(()=>el.classList.add('ab-visible'),cards.indexOf(el)*110);
+  // Track section visibility state
+  const sectionStates = new Map(); // id -> 'above' | 'visible' | 'below'
+  sections.forEach(el => sectionStates.set(el.id, 'below'));
+
+  function updateSections() {
+    const viewTop = sc.scrollTop;
+    const viewBottom = viewTop + sc.clientHeight;
+    const threshold = sc.clientHeight * 0.15;
+
+    sections.forEach(el => {
+      const elTop = el.offsetTop;
+      const elBottom = elTop + el.offsetHeight;
+      const prevState = sectionStates.get(el.id);
+
+      // Determine new state
+      let newState;
+      if (elBottom < viewTop + threshold) {
+        newState = 'above';
+      } else if (elTop > viewBottom - threshold) {
+        newState = 'below';
+      } else {
+        newState = 'visible';
       }
-      io.unobserve(el);
-    });
-  },{root:sc,threshold:0.12});
 
-  // Observe sections (except home which starts visible)
-  document.querySelectorAll('.scroll-section:not(.section-home)').forEach(el=>io.observe(el));
-  // Observe inner elements
-  document.querySelectorAll('.ab-big-title,.ab-quote-wrap,.ab-globe-wrap,.ab-strength-card').forEach(el=>io.observe(el));
+      if (newState === prevState) return;
+      sectionStates.set(el.id, newState);
+
+      // Remove all state classes first
+      el.classList.remove('section-visible', 'section-exit-up', 'section-exit-down');
+
+      if (newState === 'visible') {
+        // Small delay so transition fires
+        requestAnimationFrame(() => el.classList.add('section-visible'));
+      } else if (newState === 'above') {
+        // Was visible, now scrolled past upward — exit up
+        el.classList.add('section-exit-up');
+      } else if (newState === 'below') {
+        // Was visible or above, now scrolled down past — reset to below
+        el.classList.add('section-exit-down');
+      }
+    });
+  }
+
+  // Inner element intersection observer (bidirectional)
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const el = e.target;
+      if (e.isIntersecting) {
+        // Entering view
+        if (el.classList.contains('ab-strength-card')) {
+          const cards = [...document.querySelectorAll('.ab-strength-card')];
+          const delay = cards.indexOf(el) * 110;
+          setTimeout(() => {
+            el.classList.remove('ab-exit');
+            el.classList.add('ab-visible');
+          }, delay);
+        } else {
+          el.classList.remove('ab-exit');
+          requestAnimationFrame(() => el.classList.add('ab-visible'));
+        }
+      } else {
+        // Leaving view — reset for re-animation
+        el.classList.remove('ab-visible');
+        el.classList.add('ab-exit');
+        // After exit transition, fully reset
+        setTimeout(() => {
+          el.classList.remove('ab-exit');
+        }, 500);
+      }
+    });
+  }, { root: sc, threshold: 0.1 });
+
+  innerEls.forEach(el => io.observe(el));
+
+  // Listen to scroll for section bidirectional
+  sc.addEventListener('scroll', updateSections, { passive: true });
+  // Initial check
+  setTimeout(updateSections, 100);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -391,7 +638,7 @@ window.closeScreenshot=function(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeScreenshot();});
 
 // ═══════════════════════════════════════════════════════════════════
-// GLOBE — 3D tech stack
+// GLOBE — 3D tech stack (unchanged)
 // ═══════════════════════════════════════════════════════════════════
 const SKILLS=[
   {name:'HTML',color:'#e34f26',url:'https://developer.mozilla.org/en-US/docs/Web/HTML',svg:'<path fill="#e34f26" d="M1.5 0l1.74 19.54L12 22l8.73-2.43L22.5 0zm17.01 4.54l-.31 3.48H8.13l.21 2.38h9.65l-.96 10.79L12 22.5l-4.99-1.3-.34-3.85h3.22l.17 1.96L12 20l1.94-.52.19-2.13H7.58l-.6-6.7h10.05l.31-3.48H6.46L6.16 4.54z"/>'},
