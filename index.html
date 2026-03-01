@@ -9,7 +9,8 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="galaxy-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+<div id="progress-top"></div>
+<canvas id="galaxy-canvas"></canvas>
 <div id="cur"></div>
 <div id="curDot"></div>
 
@@ -25,6 +26,7 @@
 
 <div id="app">
 
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <a class="social-item" href="https://github.com/Moncef37i" target="_blank">
       <span class="social-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg></span>
@@ -37,6 +39,7 @@
     </a>
   </div>
 
+  <!-- NAV -->
   <nav>
     <div class="nav-left">
       <div class="nav-logo" id="smLogo">
@@ -46,150 +49,156 @@
     <div class="nav-email-wrap">
       <div class="nav-email" id="emailBtn" onclick="copyEmail()">
         <span class="copy-flash">Copied!</span>
-        <span class="nav-email-text" id="emailDisplay">souilahmoncef99&#64;gmail&#46;com</span>
+        <span class="nav-email-text">souilahmoncef99&#64;gmail&#46;com</span>
       </div>
       <div class="nav-email-hint">click to copy</div>
     </div>
     <div class="nav-right">
-      <button class="nav-link nav-link-icon" id="navHome" onclick="goPage('home')" title="Home">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" style="display:block"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <button class="nav-link nav-link-icon" id="navHome" onclick="scrollToSection('home')" title="Home">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
-      <button class="nav-link" id="navAbout" onclick="goPage('about')">About</button>
-      <button class="nav-link" id="navProjects" onclick="goPage('projects')">Projects</button>
+      <button class="nav-link" id="navAbout" onclick="scrollToSection('techstack')">About</button>
+      <button class="nav-link" id="navProjects" onclick="scrollToSection('projects')">Projects</button>
+      <button class="nav-link" id="navContact" onclick="scrollToSection('contact')">Contact</button>
     </div>
-    <div class="nav-progress-bar" id="navProgressBar"><div class="nav-progress-fill" id="navProgressFill"></div></div>
   </nav>
 
-  <!-- HOME -->
-  <div class="page active" id="page-home">
-    <div class="home-bg"></div><div class="home-glow"></div>
-    <div class="home-left">
-      <p class="hl-hello">Hello! I'm</p>
-      <h1 class="hl-name"><span class="hl-souilah">SOUILAH</span><span class="hl-moncef">MONCEF</span></h1>
-    </div>
-    <div class="home-center"><canvas id="three-canvas"></canvas></div>
-    <div class="home-right">
-      <p class="hr-an">An</p>
-      <h2 class="hr-role"><span class="r1">Web</span><span class="r2">Developer</span></h2>
-      <div class="hr-skills">
-        <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">HTML</a>
-        <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">CSS</a>
-        <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">JavaScript</a>
-        <a class="hr-skill" href="https://www.php.net" target="_blank">PHP</a>
-        <a class="hr-skill" href="https://www.mysql.com" target="_blank">MySQL</a>
-        <a class="hr-skill" href="https://threejs.org" target="_blank">Three.js</a>
+  <!-- SINGLE SCROLL CONTAINER -->
+  <div id="scroll-container">
+
+    <!-- HOME -->
+    <section class="scroll-section section-home" id="section-home">
+      <div class="home-glow"></div>
+      <div class="home-content">
+        <div class="home-left">
+          <p class="hl-hello">Hello! I'm</p>
+          <h1 class="hl-name"><span class="hl-souilah">SOUILAH</span><span class="hl-moncef">MONCEF</span></h1>
+        </div>
+        <div class="home-right">
+          <p class="hr-an">An</p>
+          <h2 class="hr-role"><span class="r1">Web</span><span class="r2">Developer</span></h2>
+          <div class="hr-skills">
+            <div class="hr-skills-row">
+              <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">HTML</a>
+              <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">CSS</a>
+              <a class="hr-skill" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">JavaScript</a>
+            </div>
+            <div class="hr-skills-row">
+              <a class="hr-skill" href="https://www.php.net" target="_blank">PHP</a>
+              <a class="hr-skill" href="https://www.mysql.com" target="_blank">MySQL</a>
+              <a class="hr-skill" href="https://threejs.org" target="_blank">Three.js</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="home-footer">
-      <div class="hf-left"><div class="hf-line"></div>Souilah Moncef<div class="hf-dot"></div><span>Available for work</span></div>
-      <div class="hf-right"><button class="cv-footer-btn" onclick="downloadCV(event)">CV<span class="cv-footer-sub">↓ download</span></button></div>
-    </div>
-  </div>
+    </section>
 
-  <!-- ABOUT -->
-  <div class="page" id="page-about">
-    <button class="icon-back-btn" onclick="goPage('home')">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="about-scroll-page" id="aboutScrollPage">
-
-      <!-- HERO -->
-      <section class="ab-section ab-section--hero">
-        <h1 class="ab-big-title"><span class="ab-title-white">ABOUT</span> <span class="ab-title-blue">ME</span></h1>
-        <div class="ab-underline"></div>
-        <div class="ab-quote-wrap">
+    <!-- ABOUT ME -->
+    <section class="scroll-section section-about" id="section-about">
+      <div class="about-content">
+        <h1 class="ab-big-title" id="aboutTitle"><span class="ab-title-white">ABOUT</span> <span class="ab-title-blue">ME</span></h1>
+        <div class="ab-underline" id="aboutUnderline"></div>
+        <div class="ab-quote-wrap" id="aboutQuote">
           <p class="ab-quote-text" id="abQuoteText"></p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- TECH STACK + GLOBE -->
-      <section class="ab-section ab-section--globe" id="abGlobeSection">
-        <h2 class="ab-big-title"><span class="ab-title-white">TECH</span> <span class="ab-title-blue">STACK</span></h2>
-        <div class="ab-underline"></div>
-        <div class="ab-globe-wrap">
-          <canvas id="globeCanvas"></canvas>
-          <div class="ab-globe-hint"></div>
+    <!-- TECH STACK -->
+    <section class="scroll-section section-techstack" id="section-techstack">
+      <h2 class="ab-big-title" id="techStackTitle"><span class="ab-title-white">TECH</span> <span class="ab-title-blue">STACK</span></h2>
+      <div class="ab-underline" id="techStackUnderline"></div>
+      <div class="ab-globe-wrap" id="abGlobeSection">
+        <canvas id="globeCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- STRENGTHS -->
+    <section class="scroll-section section-strengths" id="section-strengths">
+      <h2 class="ab-big-title" id="strengthsTitle"><span class="ab-title-white">CORE</span> <span class="ab-title-blue">STRENGTHS</span></h2>
+      <div class="ab-underline" id="strengthsUnderline"></div>
+      <div class="ab-strengths-grid">
+        <div class="ab-strength-card">
+          <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+          <span class="ab-strength-name">Problem Solving</span>
+          <p class="ab-strength-desc">Breaking complex challenges into elegant, efficient solutions</p>
         </div>
-      </section>
-
-      <!-- CORE STRENGTHS -->
-      <section class="ab-section ab-section--strengths" id="abStrengthsSection">
-        <h2 class="ab-big-title"><span class="ab-title-white">CORE</span> <span class="ab-title-blue">STRENGTHS</span></h2>
-        <div class="ab-underline"></div>
-        <div class="ab-strengths-grid">
-          <div class="ab-strength-card">
-            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
-            <span class="ab-strength-name">Problem Solving</span>
-            <p class="ab-strength-desc">Breaking complex challenges into elegant, efficient solutions</p>
-          </div>
-          <div class="ab-strength-card">
-            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-            <span class="ab-strength-name">Performance Optimization</span>
-            <p class="ab-strength-desc">Writing fast, lean code that scales under any pressure</p>
-          </div>
-          <div class="ab-strength-card">
-            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-            <span class="ab-strength-name">Clean Architecture</span>
-            <p class="ab-strength-desc">Structured, maintainable and scalable codebases from day one</p>
-          </div>
-          <div class="ab-strength-card">
-            <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
-            <span class="ab-strength-name">UI/UX Detail Focus</span>
-            <p class="ab-strength-desc">Pixel-perfect interfaces with smooth, intentional interactions</p>
-          </div>
+        <div class="ab-strength-card">
+          <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <span class="ab-strength-name">Performance Optimization</span>
+          <p class="ab-strength-desc">Writing fast, lean code that scales under any pressure</p>
         </div>
-      </section>
+        <div class="ab-strength-card">
+          <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <span class="ab-strength-name">Clean Architecture</span>
+          <p class="ab-strength-desc">Structured, maintainable and scalable codebases from day one</p>
+        </div>
+        <div class="ab-strength-card">
+          <div class="ab-strength-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+          <span class="ab-strength-name">UI/UX Detail Focus</span>
+          <p class="ab-strength-desc">Pixel-perfect interfaces with smooth, intentional interactions</p>
+        </div>
+      </div>
+    </section>
 
-      <!-- CONTACT FOOTER -->
-      <section class="ab-section ab-section--contact" id="abContactSection">
-        <div class="ab-contact-grid">
-          <!-- LEFT: Name + info -->
-          <div class="ab-contact-col ab-contact-left">
-            <div class="ab-contact-name">
-              <span class="ab-contact-name-white">SOUILAH</span>
-              <span class="ab-contact-name-blue">MONCEF</span>
-            </div>
-            <div class="ab-contact-info-group">
-              <div class="ab-contact-label">Email</div>
-              <a class="ab-contact-email" id="abContactEmail" onclick="copyAbEmail(event)"><span class="__cf_email__" data-cfemail="fb88948e92979a93969495989e9dc2c2bb9c969a9297d5989496">souilahmoncef99@gmail.com</span></a>
-              <span class="ab-contact-copied" id="abEmailCopied">Copied!</span>
-            </div>
-            <div class="ab-contact-info-group">
-              <div class="ab-contact-label">Location</div>
-              <div class="ab-contact-value">Algeria</div>
-            </div>
+    <!-- PROJECTS -->
+    <section class="scroll-section section-projects" id="section-projects">
+      <div class="proj-section-header">
+        <h2 class="ab-big-title" id="projectsTitle"><span class="ab-title-white">MY</span> <span class="ab-title-blue">WORK</span></h2>
+        <div class="ab-underline" id="projectsUnderline"></div>
+      </div>
+      <div class="proj-hscroll-wrapper" id="projHscrollWrapper">
+        <div class="proj-hscroll-track" id="projHscrollTrack"></div>
+      </div>
+      <div class="proj-see-all-wrap">
+        <button class="proj-see-all-btn" onclick="openProjectsFull()">See All Works &#8594;</button>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="scroll-section section-contact ab-section--contact" id="section-contact">
+      <div class="ab-contact-grid">
+        <div class="ab-contact-col ab-contact-left">
+          <div class="ab-contact-name">
+            <span class="ab-contact-name-blue">SOUILAH</span>
+            <span class="ab-contact-name-white">MONCEF</span>
           </div>
-
-          <!-- MIDDLE: Social links -->
-          <div class="ab-contact-col ab-contact-mid">
-            <div class="ab-contact-label">Social</div>
-            <a class="ab-contact-social" href="https://github.com/Moncef37i" target="_blank">
-              <span class="ab-contact-social-row">Github <span class="ab-social-arrow">↗</span></span>
-              <span class="ab-social-line"></span>
-            </a>
-            <a class="ab-contact-social" href="https://www.linkedin.com/in/moncef-souilah37i/" target="_blank">
-              <span class="ab-contact-social-row">Linkedin <span class="ab-social-arrow">↗</span></span>
-              <span class="ab-social-line"></span>
-            </a>
+          <div class="ab-contact-info-group">
+            <div class="ab-contact-label">Email</div>
+            <a class="ab-contact-email" id="abContactEmail" onclick="copyAbEmail(event)">souilahmoncef99@gmail.com</a>
+            <span class="ab-contact-copied" id="abEmailCopied">Copied!</span>
           </div>
-
-          <!-- RIGHT: Credit + copyright -->
-          <div class="ab-contact-col ab-contact-right">
-            <div class="ab-contact-credit">
-              Designed and Developed by <span class="ab-contact-name-white">SOUILAH</span> <span class="ab-contact-name-blue">MONCEF</span>
-            </div>
-            <div class="ab-contact-copy">© 2026</div>
+          <div class="ab-contact-info-group">
+            <div class="ab-contact-label">Location</div>
+            <div class="ab-contact-value">Algeria</div>
           </div>
         </div>
-      </section>
+        <div class="ab-contact-col ab-contact-mid">
+          <div class="ab-contact-label">Social</div>
+          <a class="ab-contact-social" href="https://github.com/Moncef37i" target="_blank">
+            <span class="ab-contact-social-row">Github <span class="ab-social-arrow">&#8599;</span></span>
+            <span class="ab-social-line"></span>
+          </a>
+          <a class="ab-contact-social" href="https://www.linkedin.com/in/moncef-souilah37i/" target="_blank">
+            <span class="ab-contact-social-row">Linkedin <span class="ab-social-arrow">&#8599;</span></span>
+            <span class="ab-social-line"></span>
+          </a>
+        </div>
+        <div class="ab-contact-col ab-contact-right">
+          <div class="ab-contact-credit">
+            Designed and Developed by <span class="ab-contact-name-blue">Souilah</span> <span class="ab-contact-name-white">Moncef</span>
+          </div>
+          <div class="ab-contact-copy">&#169; 2026</div>
+        </div>
+      </div>
+    </section>
 
-    </div>
-  </div>
+  </div><!-- /scroll-container -->
 
-  <!-- PROJECTS -->
-  <div class="page" id="page-projects">
+  <!-- FULL PROJECTS OVERLAY -->
+  <div id="page-projects-full">
     <div id="proj-grid-view">
-      <button class="icon-back-btn" onclick="goPage('home')">
+      <button class="icon-back-btn" onclick="closeProjectsFull()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div class="proj-grid-header">
@@ -199,21 +208,21 @@
         <div class="proj-row">
           <div class="proj-card" onclick="openDetail(0)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-0" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="Coffee Shop">
+              <img id="pc-ti-0" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-0" class="pc-img-inner"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">Coffee Shop</div><div class="pc-tags"><span class="pc-tag">HTML</span><span class="pc-tag">CSS</span></div></div>
           </div>
           <div class="proj-card" onclick="openDetail(1)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="Car Rental">
+              <img id="pc-ti-1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-1" class="pc-img-inner"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 4v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">Car Rental</div><div class="pc-tags"><span class="pc-tag">HTML</span><span class="pc-tag">CSS</span><span class="pc-tag">JS</span></div></div>
           </div>
           <div class="proj-card" onclick="openDetail(2)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="Portfolio">
+              <img id="pc-ti-2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-2" class="pc-img-inner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">Portfolio</div><div class="pc-tags"><span class="pc-tag">HTML</span><span class="pc-tag">CSS</span><span class="pc-tag">JS</span><span class="pc-tag">Three.js</span></div></div>
@@ -222,21 +231,21 @@
         <div class="proj-row">
           <div class="proj-card" onclick="openDetail(3)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="Task Manager">
+              <img id="pc-ti-3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-3" class="pc-img-inner"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">Task Manager</div><div class="pc-tags"><span class="pc-tag">PHP</span><span class="pc-tag">MySQL</span><span class="pc-tag">JS</span></div></div>
           </div>
           <div class="proj-card" onclick="openDetail(4)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="E-Commerce Store">
+              <img id="pc-ti-4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-4" class="pc-img-inner"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">E-Commerce Store</div><div class="pc-tags"><span class="pc-tag">PHP</span><span class="pc-tag">MySQL</span><span class="pc-tag">JS</span></div></div>
           </div>
           <div class="proj-card" onclick="openDetail(5)">
             <div class="pc-img" style="position:relative;overflow:hidden;">
-              <img id="pc-ti-5" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="Coming Soon">
+              <img id="pc-ti-5" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s;" alt="">
               <div id="pc-fb-5" class="pc-img-inner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             </div>
             <div class="pc-body"><div class="pc-title">Coming Soon</div><div class="pc-tags"><span class="pc-tag">TBD</span></div></div>
@@ -244,13 +253,12 @@
         </div>
       </div>
     </div>
-
     <div id="proj-detail-view">
       <div class="pd-topbar">
         <button class="pd-back" onclick="closeDetail()">
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <div class="pd-crumb">Projects / <b id="pd-crumb-name">—</b></div>
+        <div class="pd-crumb">Projects / <b id="pd-crumb-name">&#8212;</b></div>
       </div>
       <div class="pd-body">
         <div class="pd-screenshot">
@@ -266,10 +274,10 @@
         <div class="pd-info">
           <div>
             <div class="pd-proj-index" id="pd-index">PROJECT 00</div>
-            <div class="pd-proj-name" id="pd-name">—</div>
+            <div class="pd-proj-name" id="pd-name">&#8212;</div>
           </div>
           <div class="pd-divider"></div>
-          <div class="pd-section"><div class="pd-section-lbl">Description</div><div class="pd-desc" id="pd-desc">—</div></div>
+          <div class="pd-section"><div class="pd-section-lbl">Description</div><div class="pd-desc" id="pd-desc">&#8212;</div></div>
           <div class="pd-section"><div class="pd-section-lbl">Tech Stack</div><div class="pd-stack" id="pd-stack"></div></div>
           <div class="pd-actions">
             <a class="pd-btn pd-btn-primary" id="pd-demo" href="#" target="_blank">
@@ -286,7 +294,6 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
