@@ -163,7 +163,7 @@ function goPage(name){
   document.getElementById('page-'+name).classList.add('active');
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
   if(name==='home')document.getElementById('navHome').classList.add('active');
-  if(name==='about')document.getElementById('navAbout').classList.add('active');
+  if(name==='about'){document.getElementById('navAbout').classList.add('active');const sp=document.getElementById('aboutScrollPage');if(sp)sp.scrollTop=0;}
   if(name==='projects'){document.getElementById('navProjects').classList.add('active');document.getElementById('proj-detail-view').style.display='none';document.getElementById('proj-grid-view').style.display='flex';}
 }
 function copyEmail(){navigator.clipboard.writeText('souilahmoncef99@gmail.com').then(()=>{const b=document.getElementById('emailBtn');b.classList.add('copied');setTimeout(()=>b.classList.remove('copied'),2000);});}

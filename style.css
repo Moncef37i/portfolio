@@ -277,8 +277,8 @@ a.pd-stack-tag { text-decoration: none; cursor: none; }
 a.pd-stack-tag:hover { background: rgba(91,200,245,.22); border-color: var(--blue-bright); color: #fff; }
 .pd-info { display: flex; flex-direction: column; gap: 1.1rem; }
 .pd-proj-index { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(91,200,245,.4); }
-.pd-proj-name { font-family: var(--font-display); font-size: clamp(1.8rem,3vw,2.6rem); color: var(--text); line-height: 1; letter-spacing: .05em; }
-.pd-proj-name span { color: var(--blue); }
+.pd-proj-name { font-family: var(--font-display); font-size: clamp(1.8rem,3vw,2.6rem); color: var(--blue); line-height: 1; letter-spacing: .05em; }
+.pd-proj-name span { color: #f0f0f0; }
 .pd-divider { height: 1px; background: linear-gradient(90deg, rgba(91,200,245,.3), transparent); }
 .pd-section { display: flex; flex-direction: column; gap: .45rem; }
 .pd-section-lbl { font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(91,200,245,.45); }
