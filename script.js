@@ -170,57 +170,43 @@ smLogo.addEventListener('mouseleave',()=>{smHovered=false;smLogo.querySelectorAl
 function launch() {
   const loader = document.getElementById('loader');
   const app    = document.getElementById('app');
-  const flash  = document.getElementById('ld-flash');
   const vid    = document.getElementById('ld-video');
   if (!loader) return;
 
-  // Step 1: video zooms in + text fades (0.55s)
-  loader.classList.add('ld-exit');
+  // Init portfolio while loader still visible — galaxy canvas already running underneath
+  if (app) {
+    app.style.display = 'block';
+    app.style.opacity = '0';
+  }
+  initCardThumbs();
+  buildProjectCards();
+  initScrollSystem();
+  initScrollReveal();
+  initGlobe();
+  buildQuote();
+  bindHover();
+  initCareerLine();
 
-  // Step 2: white flash at peak of zoom (0.45s in)
-  setTimeout(() => {
-    if (flash) flash.classList.add('ld-flash-on');
-  }, 450);
+  // Stop video
+  if (vid) { vid.pause(); vid.src = ''; }
 
-  // Step 3: stop video at flash peak
-  setTimeout(() => {
-    if (vid) { vid.pause(); vid.src = ''; }
-  }, 500);
+  // Fade loader out — stars already live underneath, feels like entering the universe
+  loader.style.transition = 'opacity 0.9s cubic-bezier(.4,0,.2,1)';
+  loader.style.opacity = '0';
 
-  // Step 4: show portfolio under the flash
+  // Fade portfolio in simultaneously
   setTimeout(() => {
-    loader.style.display = 'none';
     if (app) {
-      app.style.display = 'block';
-      app.style.opacity = '0';
-    }
-    initCardThumbs();
-    buildProjectCards();
-    initScrollSystem();
-    initScrollReveal();
-    initGlobe();
-    buildQuote();
-    bindHover();
-    initCareerLine();
-  }, 520);
-
-  // Step 5: flash fades out revealing portfolio
-  setTimeout(() => {
-    if (flash) {
-      flash.classList.remove('ld-flash-on');
-      flash.classList.add('ld-flash-out');
-    }
-    if (app) {
-      app.style.transition = 'opacity 1.1s cubic-bezier(.4,0,.2,1)';
+      app.style.transition = 'opacity 0.9s cubic-bezier(.4,0,.2,1)';
       app.style.opacity = '1';
     }
-  }, 560);
+  }, 100);
 
-  // Step 6: clean up flash
+  // Clean up loader
   setTimeout(() => {
-    if (flash) flash.style.display = 'none';
+    loader.style.display = 'none';
     if (app) app.classList.add('show');
-  }, 1800);
+  }, 1000);
 }
 
 // ═══════════════════════════════════════════════════════════════════
