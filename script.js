@@ -173,40 +173,18 @@ function launch() {
   const vid    = document.getElementById('ld-video');
   if (!loader) return;
 
-  // Init portfolio while loader still visible — galaxy canvas already running underneath
-  if (app) {
-    app.style.display = 'block';
-    app.style.opacity = '0';
-  }
-  initCardThumbs();
-  buildProjectCards();
-  initScrollSystem();
-  initScrollReveal();
-  initGlobe();
-  buildQuote();
-  bindHover();
-  initCareerLine();
-
-  // Stop video
   if (vid) { vid.pause(); vid.src = ''; }
-
-  // Fade loader out — stars already live underneath, feels like entering the universe
-  loader.style.transition = 'opacity 0.9s cubic-bezier(.4,0,.2,1)';
+  loader.style.transition = 'opacity 0.8s cubic-bezier(.4,0,.2,1)';
   loader.style.opacity = '0';
-
-  // Fade portfolio in simultaneously
-  setTimeout(() => {
-    if (app) {
-      app.style.transition = 'opacity 0.9s cubic-bezier(.4,0,.2,1)';
-      app.style.opacity = '1';
-    }
-  }, 100);
-
-  // Clean up loader
   setTimeout(() => {
     loader.style.display = 'none';
-    if (app) app.classList.add('show');
-  }, 1000);
+    if (app) { app.style.display = 'block'; app.style.opacity = '0'; }
+    initCardThumbs(); buildProjectCards(); initScrollSystem();
+    initScrollReveal(); initGlobe(); buildQuote(); bindHover(); initCareerLine();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (app) { app.style.transition = 'opacity 0.7s ease'; app.style.opacity = '1'; }
+    }));
+  }, 850);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -303,6 +281,7 @@ function initHorizontalScroll(){
 // FIXED: About Me + Tech Stack + Strengths → navAbout
 const SECTION_NAV_MAP = {
   'section-home':     'navHome',
+  'section-whatido':  'navAbout',
   'section-about':    'navAbout',
   'section-career':   'navAbout',
   'section-techstack':'navAbout',
@@ -345,7 +324,7 @@ function scrollToSection(name){
   const sc=document.getElementById('scroll-container');
   const map={
     home:'section-home',
-    about:'section-about',
+    about:'section-whatido',
     techstack:'section-techstack',
     projects:'section-projects',
     contact:'section-contact'
@@ -381,7 +360,7 @@ function scrollToSection(name){
 function initScrollReveal(){
   const sc=document.getElementById('scroll-container');
   const sections = [...document.querySelectorAll('.scroll-section:not(.section-home)')];
-  const innerEls = [...document.querySelectorAll('.ab-big-title,.ab-quote-wrap,.ab-globe-wrap,.ab-strength-card')];
+  const innerEls = [...document.querySelectorAll('.ab-big-title,.ab-quote-wrap,.ab-globe-wrap,.ab-strength-card,.wid-cards-anim')];
 
   // Track section visibility state
   const sectionStates = new Map(); // id -> 'above' | 'visible' | 'below'
