@@ -204,6 +204,7 @@ function launch() {
     initGlobe();
     buildQuote();
     bindHover();
+    initCareerLine();
   }, 520);
 
   // Step 5: flash fades out revealing portfolio
@@ -319,7 +320,8 @@ function initHorizontalScroll(){
 // FIXED: About Me + Tech Stack + Strengths → navAbout
 const SECTION_NAV_MAP = {
   'section-home':     'navHome',
-  'section-about':    'navAbout',   // FIXED: was navHome
+  'section-about':    'navAbout',
+  'section-career':   'navAbout',
   'section-techstack':'navAbout',
   'section-strengths':'navAbout',
   'section-projects': 'navProjects',
@@ -575,6 +577,63 @@ const SKILLS=[
   {name:'Next.js',color:'#ffffff',url:'https://nextjs.org',svg:'<rect width="24" height="24" rx="12" fill="#000"/><path fill="#fff" d="M9.5 7v7.5l7-7.5H14V7H9.5zm0 10h1.5v-4l6 4H19L9.5 17z"/>'},
   {name:'SQL Server',color:'#cc2927',url:'https://www.microsoft.com/sql-server',svg:'<path fill="#cc2927" d="M12 3C7 3 3 4.3 3 6v12c0 1.7 4 3 9 3s9-1.3 9-3V6c0-1.7-4-3-9-3z"/><ellipse fill="#e87a7a" cx="12" cy="6" rx="9" ry="3"/><path fill="none" stroke="#e87a7a" stroke-width=".8" d="M3 10c0 1.7 4 3 9 3s9-1.3 9-3M3 14c0 1.7 4 3 9 3s9-1.3 9-3"/>'},
 ];
+
+function initCareerLine(){
+  const sc=document.getElementById('scroll-container');
+  const section=document.getElementById('section-career');
+  const fill=document.getElementById('careerLineFill');
+  const dot=document.getElementById('careerLineDot');
+  if(!sc||!section||!fill||!dot)return;
+  const entries=[...section.querySelectorAll('.career-entry')];
+  const titleEls=[...section.querySelectorAll('.career-title-1,.career-title-2,.career-title-ul')];
+
+  function update(){
+    const secTop=section.offsetTop,secH=section.offsetHeight,viewH=sc.clientHeight,st=sc.scrollTop;
+    const pct=Math.max(0,Math.min(1,(st-(secTop-viewH*.7))/((secTop+secH-viewH*.3)-(secTop-viewH*.7))));
+
+    fill.style.height=(pct*100)+'%';
+    dot.style.top=(pct*100)+'%';
+
+    // Title
+    titleEls.forEach((el,i)=>{
+      const p=Math.max(0,Math.min(1,(pct*6)-(i*0.4)));
+      el.style.opacity=p;
+      el.style.transform='translateY('+(1-p)*25+'px)';
+    });
+
+    // Entries — CSS transitions handle smooth animation
+    entries.forEach(e=>{
+      const ePct=(e.offsetTop-secTop+e.offsetHeight/2)/secH;
+      const show=pct>=ePct-0.07;
+      const left=e.querySelector('.career-left');
+      const year=e.querySelector('.career-year');
+      const right=e.querySelector('.career-right');
+      if(show){
+        if(left){left.style.opacity='1';left.style.transform='translateX(0)';}
+        if(year){year.style.opacity='1';year.style.transform='translateY(0) scale(1)';}
+        if(right){right.style.opacity='1';right.style.transform='translateX(0)';}
+      } else {
+        if(left){left.style.opacity='0';left.style.transform='translateX(-40px)';}
+        if(year){year.style.opacity='0';year.style.transform='translateY(15px) scale(0.85)';}
+        if(right){right.style.opacity='0';right.style.transform='translateX(40px)';}
+      }
+    });
+  }
+
+  // Set initial hidden state
+  titleEls.forEach(el=>{el.style.opacity='0';el.style.transform='translateY(25px)';});
+  entries.forEach(e=>{
+    const left=e.querySelector('.career-left');
+    const year=e.querySelector('.career-year');
+    const right=e.querySelector('.career-right');
+    if(left){left.style.opacity='0';left.style.transform='translateX(-40px)';}
+    if(year){year.style.opacity='0';year.style.transform='translateY(15px) scale(0.85)';}
+    if(right){right.style.opacity='0';right.style.transform='translateX(40px)';}
+  });
+
+  sc.addEventListener('scroll',update,{passive:true});
+  update();
+}
 
 function initGlobe(){
   const canvas=document.getElementById('globeCanvas'); if(!canvas)return;
