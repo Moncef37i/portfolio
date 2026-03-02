@@ -139,13 +139,13 @@ html, body { width: 100%; height: 100%; background: var(--bg); overflow: hidden;
 /* Flash overlay for transition */
 #ld-flash {
   position: fixed; inset: 0; z-index: 9999;
-  background: #fff;
+  background: #000;
   opacity: 0;
   pointer-events: none;
   transition: opacity .18s ease;
 }
 #ld-flash.ld-flash-on  { opacity: 1; }
-#ld-flash.ld-flash-out { opacity: 0; transition: opacity 1.1s cubic-bezier(.4,0,.2,1); }
+#ld-flash.ld-flash-out { opacity: 0; transition: opacity 1.4s cubic-bezier(.4,0,.2,1); }
 
 /* Loader exit — video zooms in fast */
 #loader.ld-exit {
