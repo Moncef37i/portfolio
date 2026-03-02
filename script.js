@@ -95,16 +95,12 @@ function initVideoLoader() {
   // All timers start AFTER user clicks enter (so they're in sync with video)
   function startLoaderTimers() {
     var bl = [boot1, boot2, boot3, boot4];
-    [200, 900, 1800, 3400].forEach(function(d, i) {
+    [0, 200, 400, 650].forEach(function(d, i) {
       if (!bl[i]) return;
       setTimeout(function() { bl[i].classList.add('ld-boot-visible'); }, d);
     });
-    setTimeout(function() { if (text1) text1.classList.add('ld-visible'); }, 3000);
-    setTimeout(function() {
-      if (text1) { text1.classList.add('ld-hide'); text1.classList.remove('ld-visible'); }
-      setTimeout(function() { if (text2) text2.classList.add('ld-visible'); }, 500);
-    }, 6000);
-    setTimeout(launch, 8000);
+    setTimeout(function() { if (text2) text2.classList.add('ld-visible'); }, 900);
+    setTimeout(launch, 2000);
   }
 
 }
