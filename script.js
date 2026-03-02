@@ -101,6 +101,17 @@ function initVideoLoader() {
     });
     setTimeout(function() { if (text2) text2.classList.add('ld-visible'); }, 900);
     setTimeout(launch, 2000);
+
+    // Progress bar — grows in steps matching boot lines + launch
+    var bar = document.getElementById('ld-progress-bar');
+    if (bar) {
+      bar.style.width = '0%';
+      setTimeout(function(){ bar.style.transition='width 0.4s ease'; bar.style.width='20%'; }, 0);
+      setTimeout(function(){ bar.style.width='40%'; }, 200);
+      setTimeout(function(){ bar.style.width='60%'; }, 400);
+      setTimeout(function(){ bar.style.width='75%'; }, 650);
+      setTimeout(function(){ bar.style.transition='width 0.6s ease'; bar.style.width='88%'; }, 900);
+    }
   }
 
 }
@@ -174,8 +185,16 @@ function launch() {
   if (!loader) return;
 
   if (vid) { vid.pause(); vid.src = ''; }
-  loader.style.transition = 'opacity 0.8s cubic-bezier(.4,0,.2,1)';
-  loader.style.opacity = '0';
+  // Complete progress bar to 100%
+  const bar = document.getElementById('ld-progress-bar');
+  if (bar) { bar.style.transition = 'width 0.4s ease'; bar.style.width = '100%'; }
+
+  // Fade loader out
+  setTimeout(() => {
+    loader.style.transition = 'opacity 0.8s cubic-bezier(.4,0,.2,1)';
+    loader.style.opacity = '0';
+  }, 300);
+
   setTimeout(() => {
     loader.style.display = 'none';
     if (app) { app.style.display = 'block'; app.style.opacity = '0'; }
@@ -184,7 +203,7 @@ function launch() {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (app) { app.style.transition = 'opacity 0.7s ease'; app.style.opacity = '1'; }
     }));
-  }, 850);
+  }, 1150);
 }
 
 // ═══════════════════════════════════════════════════════════════════
