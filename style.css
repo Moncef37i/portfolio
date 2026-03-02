@@ -609,7 +609,7 @@ a.pd-stack-tag { text-decoration: none; cursor: none; }
 }
 
 /* ── HERO PHOTO ── */
-.home-center { display:flex; align-items:center; justify-content:center; padding:0 2vw; }
+.home-center { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 2vw; }
 .hc-wrap { position:relative; width:clamp(180px,22vw,260px); height:clamp(180px,22vw,260px); }
 .hc-photo { width:100%; height:100%; border-radius:50%; object-fit:cover; display:block; position:relative; z-index:2; }
 .hc-ring { position:absolute; inset:-5px; border-radius:50%; z-index:1;
@@ -620,6 +620,42 @@ a.pd-stack-tag { text-decoration: none; cursor: none; }
   z-index:0; animation:hcPulse 2.5s ease-in-out infinite; }
 @keyframes hcRing { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 @keyframes hcPulse { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
+
+/* ── GET IN TOUCH BAR ── */
+.hc-contact-bar {
+  display: block;
+  margin-top: 1.4rem;
+  padding: .52rem 0;
+  width: clamp(180px,22vw,260px);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: .2em;
+  color: var(--blue);
+  text-decoration: none;
+  text-align: center;
+  border: 1px solid rgba(91,200,245,.5);
+  background: rgba(91,200,245,.04);
+  cursor: none;
+  animation: barGlow 2.5s ease-in-out infinite;
+  transition: background .3s, color .3s;
+}
+.hc-contact-bar:hover {
+  background: rgba(91,200,245,.15);
+  color: #fff;
+}
+@keyframes barGlow {
+  0%,100% {
+    box-shadow: 0 0 6px rgba(91,200,245,.3), 0 0 14px rgba(91,200,245,.15);
+    border-color: rgba(91,200,245,.4);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(91,200,245,.7), 0 0 40px rgba(91,200,245,.35), 0 0 70px rgba(91,200,245,.15);
+    border-color: rgba(91,200,245,.9);
+  }
+}
+@media(max-width:700px){
+  .hc-contact-bar { cursor: auto; font-size: .85rem; width: clamp(130px,40vw,180px); }
+}
 @media(max-width:700px){
   .home-center{padding:.5rem 0; order:-1;}
   .hc-wrap{width:clamp(130px,40vw,180px);height:clamp(130px,40vw,180px);}
