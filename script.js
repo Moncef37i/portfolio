@@ -263,7 +263,7 @@ function buildProjectCards(){
       <div class="proj-h-num">${String(i+1).padStart(2,'0')}</div>
       <div class="proj-h-top">
         <div class="proj-h-category">${p.category}</div>
-        <div class="proj-h-name">${p.name==='Travel Agency'?'Travel <span style="color:var(--blue)">Agency</span>':p.name}</div>
+        <div class="proj-h-name">${(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})()} </div>
       </div>
       <div class="proj-h-tools-label">Tools and features</div>
       <div class="proj-h-tags">${tags}</div>
@@ -513,7 +513,7 @@ function openDetail(i){
   document.getElementById('pd-crumb-name').textContent=p.name;
   document.getElementById('pd-index').textContent='PROJECT '+String(i+1).padStart(2,'0');
   const parts=p.name.split(' ');
-  document.getElementById('pd-name').innerHTML=p.name==='Travel Agency'?'Travel <span style="color:var(--blue)">Agency</span>':'<span>'+parts[0]+'</span> '+parts.slice(1).join(' ');
+  document.getElementById('pd-name').innerHTML=(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})();
   document.getElementById('pd-desc').textContent=p.desc;
   document.getElementById('pd-stack').innerHTML=p.stack.map(t=>{const url=TECH_LINKS[t];return url?`<a class="pd-stack-tag" href="${url}" target="_blank" rel="noopener">${t}</a>`:`<span class="pd-stack-tag">${t}</span>`;}).join('');
   document.getElementById('pd-demo').href=p.demo;
@@ -588,6 +588,11 @@ function initCareerLine(){
   const entries=[...section.querySelectorAll('.career-entry')];
   const titleEls=[...section.querySelectorAll('.career-title-1,.career-title-2,.career-title-ul')];
 
+  // Set transitions
+  [...titleEls,...entries].forEach(el=>{
+    el.style.transition='opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)';
+  });
+
   function update(){
     const secTop=section.offsetTop,secH=section.offsetHeight,viewH=sc.clientHeight,st=sc.scrollTop;
     const pct=Math.max(0,Math.min(1,(st-(secTop-viewH*.7))/((secTop+secH-viewH*.3)-(secTop-viewH*.7))));
@@ -595,42 +600,24 @@ function initCareerLine(){
     fill.style.height=(pct*100)+'%';
     dot.style.top=(pct*100)+'%';
 
-    // Title
+    // Section is visible when pct between 0.03 and 0.97
+    const visible=pct>0.03&&pct<0.97;
+
     titleEls.forEach((el,i)=>{
-      const p=Math.max(0,Math.min(1,(pct*6)-(i*0.4)));
-      el.style.opacity=p;
-      el.style.transform='translateY('+(1-p)*25+'px)';
+      el.style.transitionDelay=visible?(i*0.08)+'s':'0s';
+      el.style.opacity=visible?'1':'0';
+      el.style.transform=visible?'translateY(0)':'translateY(20px)';
     });
 
-    // Entries — CSS transitions handle smooth animation
-    entries.forEach(e=>{
-      const ePct=(e.offsetTop-secTop+e.offsetHeight/2)/secH;
-      const show=pct>=ePct-0.07;
-      const left=e.querySelector('.career-left');
-      const year=e.querySelector('.career-year');
-      const right=e.querySelector('.career-right');
-      if(show){
-        if(left){left.style.opacity='1';left.style.transform='translateX(0)';}
-        if(year){year.style.opacity='1';year.style.transform='translateY(0) scale(1)';}
-        if(right){right.style.opacity='1';right.style.transform='translateX(0)';}
-      } else {
-        if(left){left.style.opacity='0';left.style.transform='translateX(-40px)';}
-        if(year){year.style.opacity='0';year.style.transform='translateY(15px) scale(0.85)';}
-        if(right){right.style.opacity='0';right.style.transform='translateX(40px)';}
-      }
+    entries.forEach((e,i)=>{
+      e.style.transitionDelay=visible?(0.1+i*0.07)+'s':'0s';
+      e.style.opacity=visible?'1':'0';
+      e.style.transform=visible?'translateY(0)':'translateY(16px)';
     });
   }
 
-  // Set initial hidden state
-  titleEls.forEach(el=>{el.style.opacity='0';el.style.transform='translateY(25px)';});
-  entries.forEach(e=>{
-    const left=e.querySelector('.career-left');
-    const year=e.querySelector('.career-year');
-    const right=e.querySelector('.career-right');
-    if(left){left.style.opacity='0';left.style.transform='translateX(-40px)';}
-    if(year){year.style.opacity='0';year.style.transform='translateY(15px) scale(0.85)';}
-    if(right){right.style.opacity='0';right.style.transform='translateX(40px)';}
-  });
+  // Init hidden
+  [...titleEls,...entries].forEach(el=>{ el.style.opacity='0'; el.style.transform='translateY(16px)'; });
 
   sc.addEventListener('scroll',update,{passive:true});
   update();
