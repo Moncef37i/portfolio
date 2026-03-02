@@ -127,6 +127,7 @@ const PROJECTS=[
   {name:'Coffee Shop',category:'Front-End',desc:'A fully responsive coffee shop website with animated menu, parallax hero section, smooth scroll interactions and a functional cart — built with pure HTML and CSS.',stack:['HTML','CSS'],demo:'https://moncef37i.github.io/Coffee-shop/',github:'https://github.com/Moncef37i/Coffee-shop',screenshot:'images/coffee.png'},
   {name:'Car Rental',category:'Front-End',desc:'A complete car rental platform with vehicle catalogue, daily pricing in DA, reservation system and a clean responsive layout with smooth card interactions.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/Location-de-voiture/',github:'https://github.com/Moncef37i/Location-de-voiture',screenshot:'images/carrental.png'},
   {name:'Portfolio',category:'Full-Stack',desc:'This portfolio — a cinematic Three.js-powered site with custom GLSL shader, animated star field and smooth scroll interactions.',stack:['HTML','CSS','JavaScript','Three.js'],demo:'https://moncef37i.github.io/portfolio/',github:'https://github.com/Moncef37i/portfolio',screenshot:'images/portfolio.png'},
+  {name:'Travel Agency',category:'Front-End',desc:'A luxury travel agency website for Algeria — featuring destination showcases, premium tour packages, multilingual support and a clean responsive design.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/algeria-travel-agency/',github:'https://github.com/Moncef37i',screenshot:'images/agence.png'},
   {name:'Task Manager',category:'Full-Stack',desc:'A Kanban-style task management app with drag-and-drop boards, priority tagging, due dates, team avatars and status columns: To Do, Doing, Done.',stack:['PHP','MySQL','JavaScript','CSS'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/taskmanager.jpg'},
   {name:'E-Commerce Store',category:'Full-Stack',desc:'Full-stack online shop with product catalogue, category filtering, flash sales countdown, shopping cart, user authentication and complete admin dashboard.',stack:['PHP','MySQL','JavaScript','CSS','HTML'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/ecommerce.png'},
   {name:'Coming Soon',category:'In Progress',desc:'A new project is currently in development. Something exciting is on the way — stay tuned and check back soon.',stack:['TBD'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/comingsoon.jpg'}
@@ -262,7 +263,7 @@ function buildProjectCards(){
       <div class="proj-h-num">${String(i+1).padStart(2,'0')}</div>
       <div class="proj-h-top">
         <div class="proj-h-category">${p.category}</div>
-        <div class="proj-h-name">${p.name}</div>
+        <div class="proj-h-name">${p.name==='Travel Agency'?'Travel <span style="color:var(--blue)">Agency</span>':p.name}</div>
       </div>
       <div class="proj-h-tools-label">Tools and features</div>
       <div class="proj-h-tags">${tags}</div>
@@ -512,7 +513,7 @@ function openDetail(i){
   document.getElementById('pd-crumb-name').textContent=p.name;
   document.getElementById('pd-index').textContent='PROJECT '+String(i+1).padStart(2,'0');
   const parts=p.name.split(' ');
-  document.getElementById('pd-name').innerHTML='<span>'+parts[0]+'</span> '+parts.slice(1).join(' ');
+  document.getElementById('pd-name').innerHTML=p.name==='Travel Agency'?'Travel <span style="color:var(--blue)">Agency</span>':'<span>'+parts[0]+'</span> '+parts.slice(1).join(' ');
   document.getElementById('pd-desc').textContent=p.desc;
   document.getElementById('pd-stack').innerHTML=p.stack.map(t=>{const url=TECH_LINKS[t];return url?`<a class="pd-stack-tag" href="${url}" target="_blank" rel="noopener">${t}</a>`:`<span class="pd-stack-tag">${t}</span>`;}).join('');
   document.getElementById('pd-demo').href=p.demo;
