@@ -127,17 +127,17 @@ const TECH_LINKS = {
   'PHP':'https://www.php.net','MySQL':'https://www.mysql.com',
   'Three.js':'https://threejs.org','TypeScript':'https://www.typescriptlang.org',
   'Node.js':'https://nodejs.org','Vue.js':'https://vuejs.org',
-  'Next.js':'https://nextjs.org','SQL Server':'https://www.microsoft.com/sql-server','TBD':null
+  'Next.js':'https://nextjs.org','SQL Server':'https://www.microsoft.com/sql-server','React':'https://react.dev','TBD':null
 };
 
 const PROJECTS=[
   {name:'Coffee Shop',category:'Front-End',desc:'A fully responsive coffee shop website with animated menu, parallax hero section, smooth scroll interactions and a functional cart — built with pure HTML and CSS.',stack:['HTML','CSS'],demo:'https://moncef37i.github.io/Coffee-shop/',github:'https://github.com/Moncef37i/Coffee-shop',screenshot:'images/coffee.png'},
-  {name:'Car Rental',category:'Front-End',desc:'A complete car rental platform with vehicle catalogue, daily pricing in DA, reservation system and a clean responsive layout with smooth card interactions.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/Location-de-voiture/',github:'https://github.com/Moncef37i/Location-de-voiture',screenshot:'images/carrental.png'},
+  {name:'Location Voiture',category:'Front-End',desc:'A complete car rental platform with vehicle catalogue, daily pricing in DA, reservation system and a clean responsive layout with smooth card interactions.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/Location-de-voiture/',github:'https://github.com/Moncef37i/Location-de-voiture',screenshot:'images/carrental.png'},
   {name:'Portfolio',category:'Full-Stack',desc:'This portfolio — a cinematic Three.js-powered site with custom GLSL shader, animated star field and smooth scroll interactions.',stack:['HTML','CSS','JavaScript','Three.js'],demo:'https://moncef37i.github.io/portfolio/',github:'https://github.com/Moncef37i/portfolio',screenshot:'images/portfolio.png'},
   {name:'Travel Agency',category:'Front-End',desc:'A luxury travel agency website for Algeria — featuring destination showcases, premium tour packages, multilingual support and a clean responsive design.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/algeria-travel-agency/',github:'https://github.com/Moncef37i',screenshot:'images/agence.png'},
+  {name:'PureSmile Dentistry',category:'Front-End',desc:'A modern dental clinic website crafted with React — featuring smooth appointment booking, service showcases, animated transitions and a clean, professional UI designed to build patient trust at first glance.',stack:['React'],demo:'https://moncef37i.github.io/dental-clinic/',github:'https://github.com/Moncef37i',screenshot:'images/puresmile.png'},
   {name:'Task Manager',category:'Full-Stack',desc:'A Kanban-style task management app with drag-and-drop boards, priority tagging, due dates, team avatars and status columns: To Do, Doing, Done.',stack:['PHP','MySQL','JavaScript','CSS'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/taskmanager.jpg'},
   {name:'E-Commerce Store',category:'Full-Stack',desc:'Full-stack online shop with product catalogue, category filtering, flash sales countdown, shopping cart, user authentication and complete admin dashboard.',stack:['PHP','MySQL','JavaScript','CSS','HTML'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/ecommerce.png'},
-  {name:'Coming Soon',category:'In Progress',desc:'A new project is currently in development. Something exciting is on the way — stay tuned and check back soon.',stack:['TBD'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/comingsoon.jpg'}
 ];
 
 // ═══════════════════════════════════════════════════════════════════
