@@ -136,6 +136,7 @@ const PROJECTS=[
   {name:'Portfolio',category:'Full-Stack',desc:'This portfolio — a cinematic Three.js-powered site with custom GLSL shader, animated star field and smooth scroll interactions.',stack:['HTML','CSS','JavaScript','Three.js'],demo:'https://moncef37i.github.io/portfolio/',github:'https://github.com/Moncef37i/portfolio',screenshot:'images/portfolio.png'},
   {name:'Travel Agency',category:'Front-End',desc:'A luxury travel agency website for Algeria — featuring destination showcases, premium tour packages, multilingual support and a clean responsive design.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/algeria-travel-agency/',github:'https://github.com/Moncef37i',screenshot:'images/agence.png'},
   {name:'PureSmile Dentistry',category:'Front-End',desc:'A modern dental clinic website crafted with React — featuring smooth appointment booking, service showcases, animated transitions and a clean, professional UI designed to build patient trust at first glance.',stack:['React'],demo:'https://moncef37i.github.io/dental-clinic/',github:'https://github.com/Moncef37i',screenshot:'images/puresmile.png'},
+  {name:'Tavola',nameStyle:'<span style="color:#ffffff">Tavola</span> <span style="color:var(--blue)">Restaurant</span>',category:'Front-End',desc:'A vibrant restaurant website built with React — featuring an elegant menu showcase, smooth scroll animations, reservation flow, and a warm immersive design that makes every dish look irresistible.',stack:['React'],demo:'https://moncef37i.github.io/Trivola-Restaurant/',github:'https://github.com/Moncef37i',screenshot:'images/tavola.png'},
   {name:'Task Manager',category:'Full-Stack',desc:'A Kanban-style task management app with drag-and-drop boards, priority tagging, due dates, team avatars and status columns: To Do, Doing, Done.',stack:['PHP','MySQL','JavaScript','CSS'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/taskmanager.jpg'},
   {name:'E-Commerce Store',category:'Full-Stack',desc:'Full-stack online shop with product catalogue, category filtering, flash sales countdown, shopping cart, user authentication and complete admin dashboard.',stack:['PHP','MySQL','JavaScript','CSS','HTML'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/ecommerce.png'},
 ];
@@ -242,7 +243,7 @@ function buildProjectCards(){
       <div class="proj-h-num">${String(i+1).padStart(2,'0')}</div>
       <div class="proj-h-top">
         <div class="proj-h-category">${p.category}</div>
-        <div class="proj-h-name">${(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})()} </div>
+        <div class="proj-h-name">${p.nameStyle||(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})()} </div>
       </div>
       <div class="proj-h-tools-label">Tools and features</div>
       <div class="proj-h-tags">${tags}</div>
@@ -493,7 +494,7 @@ function openDetail(i){
   document.getElementById('pd-crumb-name').textContent=p.name;
   document.getElementById('pd-index').textContent='PROJECT '+String(i+1).padStart(2,'0');
   const parts=p.name.split(' ');
-  document.getElementById('pd-name').innerHTML=(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})();
+  document.getElementById('pd-name').innerHTML=p.nameStyle||(()=>{const w=p.name.split(' ');return w.length>1?w[0]+' <span style="color:var(--blue)">'+w.slice(1).join(' ')+'</span>':p.name;})();
   document.getElementById('pd-desc').textContent=p.desc;
   document.getElementById('pd-stack').innerHTML=p.stack.map(t=>{const url=TECH_LINKS[t];return url?`<a class="pd-stack-tag" href="${url}" target="_blank" rel="noopener">${t}</a>`:`<span class="pd-stack-tag">${t}</span>`;}).join('');
   document.getElementById('pd-demo').href=p.demo;
