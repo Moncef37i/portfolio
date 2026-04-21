@@ -119,15 +119,8 @@ function initVideoLoader() {
 // ═══════════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════════
-const TECH_LINKS = {
-  'HTML':'https://developer.mozilla.org/en-US/docs/Web/HTML',
-  'CSS':'https://developer.mozilla.org/en-US/docs/Web/CSS',
-  'JavaScript':'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
-  'JS':'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
-  'PHP':'https://www.php.net','MySQL':'https://www.mysql.com',
-  'Three.js':'https://threejs.org','TypeScript':'https://www.typescriptlang.org',
-  'Node.js':'https://nodejs.org','Vue.js':'https://vuejs.org',
-  'Next.js':'https://nextjs.org','SQL Server':'https://www.microsoft.com/sql-server','React':'https://react.dev','TBD':null
+const TECH_LINKS={
+  'Next.js':'https://nextjs.org','SQL Server':'https://www.microsoft.com/sql-server','React':'https://react.dev','Tailwind CSS':'https://tailwindcss.com/','Framer Motion':'https://www.framer.com/motion/','Lucide React':'https://lucide.dev/','TBD':null
 };
 
 const PROJECTS=[
@@ -138,7 +131,8 @@ const PROJECTS=[
   {name:'PureSmile Dentistry',category:'Front-End',desc:'A modern dental clinic website crafted with React — featuring smooth appointment booking, service showcases, animated transitions and a clean, professional UI designed to build patient trust at first glance.',stack:['React'],demo:'https://moncef37i.github.io/dental-clinic/',github:'https://github.com/Moncef37i',screenshot:'images/puresmile.png'},
   {name:'Tavola',nameStyle:'<span style="color:#ffffff">Tavola</span> <span style="color:var(--blue)">Restaurant</span>',category:'Front-End',desc:'A vibrant restaurant website built with React — featuring an elegant menu showcase, smooth scroll animations, reservation flow, and a warm immersive design that makes every dish look irresistible.',stack:['React'],demo:'https://moncef37i.github.io/Tavola-Restaurant/',github:'https://github.com/Moncef37i',screenshot:'images/tavola.png'},
   {name:'The Golden Atrium',category:'Front-End',desc:'A premium luxury hotel website featuring cinematic hero animations, room showcase, elegant booking UI and a rich immersive design crafted to reflect five-star hospitality.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/The-Golden-Atrium/',github:'https://github.com/Moncef37i/The-Golden-Atrium',screenshot:'images/goldenatrium.png'},
-  {name:'E-Commerce Store',category:'Full-Stack',desc:'Full-stack online shop with product catalogue, category filtering, flash sales countdown, shopping cart, user authentication and complete admin dashboard.',stack:['PHP','MySQL','JavaScript','CSS','HTML'],demo:'#',github:'https://github.com/Moncef37i',screenshot:'images/ecommerce.png'},
+  {name:'SmartSchool DZ',category:'Full-Stack',desc:'A premium, modern School Management System (SaaS Dashboard) built to streamline educational administration. Features centralized management for students, faculty, academics, and school operations with a focus on performance and UX.',stack:['React','Tailwind CSS','Framer Motion','Lucide React'],demo:'https://moncef37i.github.io/smartschool-dz/',github:'https://github.com/Moncef37i/smartschool-dz',screenshot:'images/smartschool-dz.png'},
+  {name:'Portfolio Template',category:'Front-End',desc:'A clean, professional and highly customizable portfolio template designed for developers and creatives. Features smooth animations, responsive design, and a modern aesthetic to showcase your work effectively.',stack:['HTML','CSS','JavaScript'],demo:'https://moncef37i.github.io/portfolio-template/',github:'https://github.com/Moncef37i/portfolio-template',screenshot:'images/portfolio-template.png'},
 ];
 
 // ═══════════════════════════════════════════════════════════════════
